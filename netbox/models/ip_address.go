@@ -577,3 +577,9 @@ func (m *IPAddressStatus) UnmarshalBinary(b []byte) error {
 	*m = res
 	return nil
 }
+
+type IPData struct {
+	Family *int `json:"family,omitempty"`
+	Address *string `json:"address,omitempty"`
+	Vrf *string `json:"vrf,omitempty"`
+}
