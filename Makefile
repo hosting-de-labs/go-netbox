@@ -10,4 +10,4 @@ integration:
 	go test ./... -tags=integration
 
 patches:
-	patches/apply-patches.sh patches
+	scripts/apply-patches.sh patches

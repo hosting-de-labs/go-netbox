@@ -8,5 +8,6 @@ if [ -n "${1}" ]; then
 fi
 
 while read -e patch_file; do
-    patch --batch --strip=1 < "${patch_file}"
+    echo "Applying file ${patch_file}}"
+    patch --batch --forward --strip=1 --silent < "${patch_file}"
 done < <(find "${patch_files_directory}" -name '*.patch')
