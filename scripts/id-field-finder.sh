@@ -17,16 +17,19 @@ while read -e path_json; do
     declare operation_id=$(echo "${path_json}" | jq --raw-output ".${mode}.operationId")
     while read -e field_json; do
         declare name=$(echo "${field_json}" | jq --raw-output '.name')
-        declare type=$(echo "${field_json}" | jq --raw-output '.type')
 
-        if [ "${name}" = "id" ] && [ "${type}" != "integer" ]; then
-            echo "## ${operation_id}: field ${name} has type ${type}"
-        fi
-
-        if echo "${name}" | grep '_id' | grep -q -v '_id__'; then
-            if [ "${type}" != "integer" ]; then
+        if [ "${name}" = "id" ] || echo "${name}" | grep '_id' | grep -q -v '_id__'; then
+            declare type=$(echo "${field_json}" | jq --raw-output '.type')
+            if [ "${name}" = "id" ] && [ "${type}" != "integer" ]; then
                 echo "## ${operation_id}: field ${name} has type ${type}"
             fi
+
+            if echo "${name}" | grep '_id' | grep -q -v '_id__'; then
+                if [ "${type}" != "integer" ]; then
+                    echo "## ${operation_id}: field ${name} has type ${type}"
+                fi
+            fi
         fi
+
     done < <(echo "${path_json}" | jq --compact-output ".${mode}.parameters[]")
 done < <(cat "${swagger_file}" | jq --compact-output '.paths[]')
