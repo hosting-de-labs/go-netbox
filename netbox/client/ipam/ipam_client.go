@@ -41,10 +41,6 @@ type Client struct {
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	IpamChoicesList(params *IpamChoicesListParams, authInfo runtime.ClientAuthInfoWriter) (*IpamChoicesListOK, error)
-
-	IpamChoicesRead(params *IpamChoicesReadParams, authInfo runtime.ClientAuthInfoWriter) (*IpamChoicesReadOK, error)
-
 	IpamAggregatesCreate(params *IpamAggregatesCreateParams, authInfo runtime.ClientAuthInfoWriter) (*IpamAggregatesCreateCreated, error)
 
 	IpamAggregatesDelete(params *IpamAggregatesDeleteParams, authInfo runtime.ClientAuthInfoWriter) (*IpamAggregatesDeleteNoContent, error)
@@ -162,76 +158,6 @@ type ClientService interface {
 	IpamVrfsUpdate(params *IpamVrfsUpdateParams, authInfo runtime.ClientAuthInfoWriter) (*IpamVrfsUpdateOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
-}
-
-/*
-  IpamChoicesList ipam choices list API
-*/
-func (a *Client) IpamChoicesList(params *IpamChoicesListParams, authInfo runtime.ClientAuthInfoWriter) (*IpamChoicesListOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewIpamChoicesListParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "ipam__choices_list",
-		Method:             "GET",
-		PathPattern:        "/ipam/_choices/",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &IpamChoicesListReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*IpamChoicesListOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for ipam__choices_list: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-  IpamChoicesRead ipam choices read API
-*/
-func (a *Client) IpamChoicesRead(params *IpamChoicesReadParams, authInfo runtime.ClientAuthInfoWriter) (*IpamChoicesReadOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewIpamChoicesReadParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "ipam__choices_read",
-		Method:             "GET",
-		PathPattern:        "/ipam/_choices/{id}/",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http"},
-		Params:             params,
-		Reader:             &IpamChoicesReadReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*IpamChoicesReadOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for ipam__choices_read: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
 }
 
 /*
@@ -658,6 +584,9 @@ func (a *Client) IpamIPAddressesUpdate(params *IpamIPAddressesUpdateParams, auth
   IpamPrefixesAvailableIpsCreate A convenience method for returning available IP addresses within a prefix. By default, the number of IPs
 returned will be equivalent to PAGINATE_COUNT. An arbitrary limit (up to MAX_PAGE_SIZE, if set) may be passed,
 however results will not be paginated.
+
+The advisory lock decorator uses a PostgreSQL advisory lock to prevent this API from being
+invoked in parallel, which results in a race condition where multiple insertions can occur.
 */
 func (a *Client) IpamPrefixesAvailableIpsCreate(params *IpamPrefixesAvailableIpsCreateParams, authInfo runtime.ClientAuthInfoWriter) (*IpamPrefixesAvailableIpsCreateCreated, error) {
 	// TODO: Validate the params before sending
@@ -695,6 +624,9 @@ func (a *Client) IpamPrefixesAvailableIpsCreate(params *IpamPrefixesAvailableIps
   IpamPrefixesAvailableIpsRead A convenience method for returning available IP addresses within a prefix. By default, the number of IPs
 returned will be equivalent to PAGINATE_COUNT. An arbitrary limit (up to MAX_PAGE_SIZE, if set) may be passed,
 however results will not be paginated.
+
+The advisory lock decorator uses a PostgreSQL advisory lock to prevent this API from being
+invoked in parallel, which results in a race condition where multiple insertions can occur.
 */
 func (a *Client) IpamPrefixesAvailableIpsRead(params *IpamPrefixesAvailableIpsReadParams, authInfo runtime.ClientAuthInfoWriter) (*IpamPrefixesAvailableIpsReadOK, error) {
 	// TODO: Validate the params before sending
@@ -729,7 +661,10 @@ func (a *Client) IpamPrefixesAvailableIpsRead(params *IpamPrefixesAvailableIpsRe
 }
 
 /*
-  IpamPrefixesAvailablePrefixesCreate A convenience method for returning available child prefixes within a parent.
+  IpamPrefixesAvailablePrefixesCreate as convenience method for returning available child prefixes within a parent
+
+  The advisory lock decorator uses a PostgreSQL advisory lock to prevent this API from being
+invoked in parallel, which results in a race condition where multiple insertions can occur.
 */
 func (a *Client) IpamPrefixesAvailablePrefixesCreate(params *IpamPrefixesAvailablePrefixesCreateParams, authInfo runtime.ClientAuthInfoWriter) (*IpamPrefixesAvailablePrefixesCreateCreated, error) {
 	// TODO: Validate the params before sending
@@ -764,7 +699,10 @@ func (a *Client) IpamPrefixesAvailablePrefixesCreate(params *IpamPrefixesAvailab
 }
 
 /*
-  IpamPrefixesAvailablePrefixesRead A convenience method for returning available child prefixes within a parent.
+  IpamPrefixesAvailablePrefixesRead as convenience method for returning available child prefixes within a parent
+
+  The advisory lock decorator uses a PostgreSQL advisory lock to prevent this API from being
+invoked in parallel, which results in a race condition where multiple insertions can occur.
 */
 func (a *Client) IpamPrefixesAvailablePrefixesRead(params *IpamPrefixesAvailablePrefixesReadParams, authInfo runtime.ClientAuthInfoWriter) (*IpamPrefixesAvailablePrefixesReadOK, error) {
 	// TODO: Validate the params before sending

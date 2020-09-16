@@ -32,6 +32,10 @@ import (
 // swagger:model WritableRearPortTemplate
 type WritableRearPortTemplate struct {
 
+	// Description
+	// Max Length: 200
+	Description string `json:"description,omitempty"`
+
 	// Device type
 	// Required: true
 	DeviceType *int64 `json:"device_type"`
@@ -39,6 +43,12 @@ type WritableRearPortTemplate struct {
 	// ID
 	// Read Only: true
 	ID int64 `json:"id,omitempty"`
+
+	// Label
+	//
+	// Physical label
+	// Max Length: 64
+	Label string `json:"label,omitempty"`
 
 	// Name
 	// Required: true
@@ -53,15 +63,28 @@ type WritableRearPortTemplate struct {
 
 	// Type
 	// Required: true
-	// Enum: [8p8c 110-punch bnc fc lc lc-apc lsh lsh-apc mpo mtrj sc sc-apc st]
+	// Enum: [8p8c 8p6c 8p4c 8p2c 110-punch bnc mrj21 fc lc lc-apc lsh lsh-apc mpo mtrj sc sc-apc st]
 	Type *string `json:"type"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this writable rear port template
 func (m *WritableRearPortTemplate) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateDescription(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateDeviceType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLabel(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,15 +100,45 @@ func (m *WritableRearPortTemplate) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateURL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
+func (m *WritableRearPortTemplate) validateDescription(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Description) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("description", "body", string(m.Description), 200); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *WritableRearPortTemplate) validateDeviceType(formats strfmt.Registry) error {
 
 	if err := validate.Required("device_type", "body", m.DeviceType); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableRearPortTemplate) validateLabel(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Label) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("label", "body", string(m.Label), 64); err != nil {
 		return err
 	}
 
@@ -130,7 +183,7 @@ var writableRearPortTemplateTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["8p8c","110-punch","bnc","fc","lc","lc-apc","lsh","lsh-apc","mpo","mtrj","sc","sc-apc","st"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["8p8c","8p6c","8p4c","8p2c","110-punch","bnc","mrj21","fc","lc","lc-apc","lsh","lsh-apc","mpo","mtrj","sc","sc-apc","st"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -143,11 +196,23 @@ const (
 	// WritableRearPortTemplateTypeNr8p8c captures enum value "8p8c"
 	WritableRearPortTemplateTypeNr8p8c string = "8p8c"
 
+	// WritableRearPortTemplateTypeNr8p6c captures enum value "8p6c"
+	WritableRearPortTemplateTypeNr8p6c string = "8p6c"
+
+	// WritableRearPortTemplateTypeNr8p4c captures enum value "8p4c"
+	WritableRearPortTemplateTypeNr8p4c string = "8p4c"
+
+	// WritableRearPortTemplateTypeNr8p2c captures enum value "8p2c"
+	WritableRearPortTemplateTypeNr8p2c string = "8p2c"
+
 	// WritableRearPortTemplateTypeNr110Punch captures enum value "110-punch"
 	WritableRearPortTemplateTypeNr110Punch string = "110-punch"
 
 	// WritableRearPortTemplateTypeBnc captures enum value "bnc"
 	WritableRearPortTemplateTypeBnc string = "bnc"
+
+	// WritableRearPortTemplateTypeMrj21 captures enum value "mrj21"
+	WritableRearPortTemplateTypeMrj21 string = "mrj21"
 
 	// WritableRearPortTemplateTypeFc captures enum value "fc"
 	WritableRearPortTemplateTypeFc string = "fc"
@@ -196,6 +261,19 @@ func (m *WritableRearPortTemplate) validateType(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableRearPortTemplate) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
 		return err
 	}
 

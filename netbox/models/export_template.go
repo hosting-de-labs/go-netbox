@@ -34,7 +34,7 @@ type ExportTemplate struct {
 
 	// Content type
 	// Required: true
-	ContentType *int64 `json:"content_type"`
+	ContentType *string `json:"content_type"`
 
 	// Description
 	// Max Length: 200
@@ -71,6 +71,11 @@ type ExportTemplate struct {
 
 	// template language
 	TemplateLanguage *ExportTemplateTemplateLanguage `json:"template_language,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this export template
@@ -102,6 +107,10 @@ func (m *ExportTemplate) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTemplateLanguage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -207,6 +216,19 @@ func (m *ExportTemplate) validateTemplateLanguage(formats strfmt.Registry) error
 	return nil
 }
 
+func (m *ExportTemplate) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (m *ExportTemplate) MarshalBinary() ([]byte, error) {
 	if m == nil {
@@ -231,17 +253,19 @@ type ExportTemplateTemplateLanguage struct {
 
 	// label
 	// Required: true
+	// Enum: [Jinja2 Django (Legacy)]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [jinja2 django]
 	Value *string `json:"value"`
 }
 
 func (m *ExportTemplateTemplateLanguage) UnmarshalJSON(b []byte) error {
 	type ExportTemplateTemplateLanguageAlias ExportTemplateTemplateLanguage
 	var t ExportTemplateTemplateLanguageAlias
-	if err := json.Unmarshal([]byte("{\"id\":20,\"label\":\"Jinja2\",\"value\":\"jinja2\"}"), &t); err != nil {
+	if err := json.Unmarshal([]byte("{\"label\":\"Jinja2\",\"value\":\"jinja2\"}"), &t); err != nil {
 		return err
 	}
 	if err := json.Unmarshal(b, &t); err != nil {
@@ -269,18 +293,86 @@ func (m *ExportTemplateTemplateLanguage) Validate(formats strfmt.Registry) error
 	return nil
 }
 
+var exportTemplateTemplateLanguageTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Jinja2","Django (Legacy)"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		exportTemplateTemplateLanguageTypeLabelPropEnum = append(exportTemplateTemplateLanguageTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// ExportTemplateTemplateLanguageLabelJinja2 captures enum value "Jinja2"
+	ExportTemplateTemplateLanguageLabelJinja2 string = "Jinja2"
+
+	// ExportTemplateTemplateLanguageLabelDjangoLegacy captures enum value "Django (Legacy)"
+	ExportTemplateTemplateLanguageLabelDjangoLegacy string = "Django (Legacy)"
+)
+
+// prop value enum
+func (m *ExportTemplateTemplateLanguage) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, exportTemplateTemplateLanguageTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *ExportTemplateTemplateLanguage) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("template_language"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("template_language"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var exportTemplateTemplateLanguageTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["jinja2","django"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		exportTemplateTemplateLanguageTypeValuePropEnum = append(exportTemplateTemplateLanguageTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// ExportTemplateTemplateLanguageValueJinja2 captures enum value "jinja2"
+	ExportTemplateTemplateLanguageValueJinja2 string = "jinja2"
+
+	// ExportTemplateTemplateLanguageValueDjango captures enum value "django"
+	ExportTemplateTemplateLanguageValueDjango string = "django"
+)
+
+// prop value enum
+func (m *ExportTemplateTemplateLanguage) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, exportTemplateTemplateLanguageTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *ExportTemplateTemplateLanguage) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("template_language"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("template_language"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

@@ -20,6 +20,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -51,6 +52,11 @@ type DeviceType struct {
 	// Read Only: true
 	DisplayName string `json:"display_name,omitempty"`
 
+	// Front image
+	// Read Only: true
+	// Format: uri
+	FrontImage strfmt.URI `json:"front_image,omitempty"`
+
 	// ID
 	// Read Only: true
 	ID int64 `json:"id,omitempty"`
@@ -81,6 +87,11 @@ type DeviceType struct {
 	// Max Length: 50
 	PartNumber string `json:"part_number,omitempty"`
 
+	// Rear image
+	// Read Only: true
+	// Format: uri
+	RearImage strfmt.URI `json:"rear_image,omitempty"`
+
 	// Slug
 	// Required: true
 	// Max Length: 50
@@ -92,12 +103,17 @@ type DeviceType struct {
 	SubdeviceRole *DeviceTypeSubdeviceRole `json:"subdevice_role,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags"`
 
 	// Height (U)
 	// Maximum: 32767
 	// Minimum: 0
 	UHeight *int64 `json:"u_height,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this device type
@@ -105,6 +121,10 @@ func (m *DeviceType) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCreated(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateFrontImage(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -124,6 +144,10 @@ func (m *DeviceType) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateRearImage(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSlug(formats); err != nil {
 		res = append(res, err)
 	}
@@ -140,6 +164,10 @@ func (m *DeviceType) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateURL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -153,6 +181,19 @@ func (m *DeviceType) validateCreated(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("created", "body", "date", m.Created.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *DeviceType) validateFrontImage(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.FrontImage) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("front_image", "body", "uri", m.FrontImage.String(), formats); err != nil {
 		return err
 	}
 
@@ -220,6 +261,19 @@ func (m *DeviceType) validatePartNumber(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *DeviceType) validateRearImage(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.RearImage) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("rear_image", "body", "uri", m.RearImage.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *DeviceType) validateSlug(formats strfmt.Registry) error {
 
 	if err := validate.Required("slug", "body", m.Slug); err != nil {
@@ -266,9 +320,17 @@ func (m *DeviceType) validateTags(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
 
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
 		}
 
 	}
@@ -287,6 +349,19 @@ func (m *DeviceType) validateUHeight(formats strfmt.Registry) error {
 	}
 
 	if err := validate.MaximumInt("u_height", "body", int64(*m.UHeight), 32767, false); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *DeviceType) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
 		return err
 	}
 
@@ -317,10 +392,12 @@ type DeviceTypeSubdeviceRole struct {
 
 	// label
 	// Required: true
+	// Enum: [Parent Child]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [parent child]
 	Value *string `json:"value"`
 }
 
@@ -342,18 +419,86 @@ func (m *DeviceTypeSubdeviceRole) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var deviceTypeSubdeviceRoleTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Parent","Child"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		deviceTypeSubdeviceRoleTypeLabelPropEnum = append(deviceTypeSubdeviceRoleTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// DeviceTypeSubdeviceRoleLabelParent captures enum value "Parent"
+	DeviceTypeSubdeviceRoleLabelParent string = "Parent"
+
+	// DeviceTypeSubdeviceRoleLabelChild captures enum value "Child"
+	DeviceTypeSubdeviceRoleLabelChild string = "Child"
+)
+
+// prop value enum
+func (m *DeviceTypeSubdeviceRole) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, deviceTypeSubdeviceRoleTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *DeviceTypeSubdeviceRole) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("subdevice_role"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("subdevice_role"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var deviceTypeSubdeviceRoleTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["parent","child"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		deviceTypeSubdeviceRoleTypeValuePropEnum = append(deviceTypeSubdeviceRoleTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// DeviceTypeSubdeviceRoleValueParent captures enum value "parent"
+	DeviceTypeSubdeviceRoleValueParent string = "parent"
+
+	// DeviceTypeSubdeviceRoleValueChild captures enum value "child"
+	DeviceTypeSubdeviceRoleValueChild string = "child"
+)
+
+// prop value enum
+func (m *DeviceTypeSubdeviceRole) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, deviceTypeSubdeviceRoleTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *DeviceTypeSubdeviceRole) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("subdevice_role"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("subdevice_role"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

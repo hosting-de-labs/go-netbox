@@ -21,6 +21,7 @@ package models
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	strfmt "github.com/go-openapi/strfmt"
@@ -55,8 +56,11 @@ type WritableCable struct {
 	LengthUnit string `json:"length_unit,omitempty"`
 
 	// Status
-	// Enum: [connected planned]
+	// Enum: [connected planned decommissioning]
 	Status string `json:"status,omitempty"`
+
+	// tags
+	Tags []*NestedTag `json:"tags"`
 
 	// Termination a
 	// Read Only: true
@@ -87,8 +91,13 @@ type WritableCable struct {
 	TerminationbType *string `json:"termination_b_type"`
 
 	// Type
-	// Enum: [cat3 cat5 cat5e cat6 cat6a cat7 dac-active dac-passive coaxial mmf mmf-om1 mmf-om2 mmf-om3 mmf-om4 smf smf-os1 smf-os2 aoc power]
+	// Enum: [cat3 cat5 cat5e cat6 cat6a cat7 dac-active dac-passive mrj21-trunk coaxial mmf mmf-om1 mmf-om2 mmf-om3 mmf-om4 smf smf-os1 smf-os2 aoc power]
 	Type string `json:"type,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this writable cable
@@ -115,6 +124,10 @@ func (m *WritableCable) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateTags(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateTerminationaID(formats); err != nil {
 		res = append(res, err)
 	}
@@ -132,6 +145,10 @@ func (m *WritableCable) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -241,7 +258,7 @@ var writableCableTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["connected","planned"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["connected","planned","decommissioning"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -256,6 +273,9 @@ const (
 
 	// WritableCableStatusPlanned captures enum value "planned"
 	WritableCableStatusPlanned string = "planned"
+
+	// WritableCableStatusDecommissioning captures enum value "decommissioning"
+	WritableCableStatusDecommissioning string = "decommissioning"
 )
 
 // prop value enum
@@ -275,6 +295,31 @@ func (m *WritableCable) validateStatus(formats strfmt.Registry) error {
 	// value enum
 	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *WritableCable) validateTags(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Tags) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
+
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -336,7 +381,7 @@ var writableCableTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["cat3","cat5","cat5e","cat6","cat6a","cat7","dac-active","dac-passive","coaxial","mmf","mmf-om1","mmf-om2","mmf-om3","mmf-om4","smf","smf-os1","smf-os2","aoc","power"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["cat3","cat5","cat5e","cat6","cat6a","cat7","dac-active","dac-passive","mrj21-trunk","coaxial","mmf","mmf-om1","mmf-om2","mmf-om3","mmf-om4","smf","smf-os1","smf-os2","aoc","power"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -369,6 +414,9 @@ const (
 
 	// WritableCableTypeDacPassive captures enum value "dac-passive"
 	WritableCableTypeDacPassive string = "dac-passive"
+
+	// WritableCableTypeMrj21Trunk captures enum value "mrj21-trunk"
+	WritableCableTypeMrj21Trunk string = "mrj21-trunk"
 
 	// WritableCableTypeCoaxial captures enum value "coaxial"
 	WritableCableTypeCoaxial string = "coaxial"
@@ -420,6 +468,19 @@ func (m *WritableCable) validateType(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableCable) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
 		return err
 	}
 

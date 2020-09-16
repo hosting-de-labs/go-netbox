@@ -20,6 +20,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -55,7 +56,7 @@ type Circuit struct {
 	CustomFields interface{} `json:"custom_fields,omitempty"`
 
 	// Description
-	// Max Length: 100
+	// Max Length: 200
 	Description string `json:"description,omitempty"`
 
 	// ID
@@ -79,7 +80,7 @@ type Circuit struct {
 	Status *CircuitStatus `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags"`
 
 	// tenant
 	Tenant *NestedTenant `json:"tenant,omitempty"`
@@ -93,6 +94,11 @@ type Circuit struct {
 	// type
 	// Required: true
 	Type *NestedCircuitType `json:"type"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this circuit
@@ -148,6 +154,10 @@ func (m *Circuit) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -210,7 +220,7 @@ func (m *Circuit) validateDescription(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MaxLength("description", "body", string(m.Description), 100); err != nil {
+	if err := validate.MaxLength("description", "body", string(m.Description), 200); err != nil {
 		return err
 	}
 
@@ -286,9 +296,17 @@ func (m *Circuit) validateTags(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
 
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
 		}
 
 	}
@@ -368,6 +386,19 @@ func (m *Circuit) validateType(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Circuit) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (m *Circuit) MarshalBinary() ([]byte, error) {
 	if m == nil {
@@ -392,10 +423,12 @@ type CircuitStatus struct {
 
 	// label
 	// Required: true
+	// Enum: [Planned Provisioning Active Offline Deprovisioning Decommissioned]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [planned provisioning active offline deprovisioning decommissioned]
 	Value *string `json:"value"`
 }
 
@@ -417,18 +450,110 @@ func (m *CircuitStatus) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var circuitStatusTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Planned","Provisioning","Active","Offline","Deprovisioning","Decommissioned"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		circuitStatusTypeLabelPropEnum = append(circuitStatusTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// CircuitStatusLabelPlanned captures enum value "Planned"
+	CircuitStatusLabelPlanned string = "Planned"
+
+	// CircuitStatusLabelProvisioning captures enum value "Provisioning"
+	CircuitStatusLabelProvisioning string = "Provisioning"
+
+	// CircuitStatusLabelActive captures enum value "Active"
+	CircuitStatusLabelActive string = "Active"
+
+	// CircuitStatusLabelOffline captures enum value "Offline"
+	CircuitStatusLabelOffline string = "Offline"
+
+	// CircuitStatusLabelDeprovisioning captures enum value "Deprovisioning"
+	CircuitStatusLabelDeprovisioning string = "Deprovisioning"
+
+	// CircuitStatusLabelDecommissioned captures enum value "Decommissioned"
+	CircuitStatusLabelDecommissioned string = "Decommissioned"
+)
+
+// prop value enum
+func (m *CircuitStatus) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, circuitStatusTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *CircuitStatus) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("status"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var circuitStatusTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["planned","provisioning","active","offline","deprovisioning","decommissioned"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		circuitStatusTypeValuePropEnum = append(circuitStatusTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// CircuitStatusValuePlanned captures enum value "planned"
+	CircuitStatusValuePlanned string = "planned"
+
+	// CircuitStatusValueProvisioning captures enum value "provisioning"
+	CircuitStatusValueProvisioning string = "provisioning"
+
+	// CircuitStatusValueActive captures enum value "active"
+	CircuitStatusValueActive string = "active"
+
+	// CircuitStatusValueOffline captures enum value "offline"
+	CircuitStatusValueOffline string = "offline"
+
+	// CircuitStatusValueDeprovisioning captures enum value "deprovisioning"
+	CircuitStatusValueDeprovisioning string = "deprovisioning"
+
+	// CircuitStatusValueDecommissioned captures enum value "decommissioned"
+	CircuitStatusValueDecommissioned string = "decommissioned"
+)
+
+// prop value enum
+func (m *CircuitStatus) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, circuitStatusTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *CircuitStatus) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("status"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

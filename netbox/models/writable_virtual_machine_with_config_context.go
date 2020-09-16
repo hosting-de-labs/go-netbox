@@ -34,7 +34,8 @@ import (
 type WritableVirtualMachineWithConfigContext struct {
 
 	// Cluster
-	Cluster int64 `json:"cluster,omitempty"`
+	// Required: true
+	Cluster *int64 `json:"cluster"`
 
 	// Comments
 	Comments string `json:"comments,omitempty"`
@@ -74,9 +75,10 @@ type WritableVirtualMachineWithConfigContext struct {
 	Memory *int64 `json:"memory,omitempty"`
 
 	// Name
+	// Required: true
 	// Max Length: 64
 	// Min Length: 1
-	Name string `json:"name,omitempty"`
+	Name *string `json:"name"`
 
 	// Platform
 	Platform *int64 `json:"platform,omitempty"`
@@ -103,10 +105,15 @@ type WritableVirtualMachineWithConfigContext struct {
 	Status string `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags"`
 
 	// Tenant
 	Tenant *int64 `json:"tenant,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 
 	// VCPUs
 	// Maximum: 32767
@@ -117,6 +124,10 @@ type WritableVirtualMachineWithConfigContext struct {
 // Validate validates this writable virtual machine with config context
 func (m *WritableVirtualMachineWithConfigContext) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateCluster(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateCreated(formats); err != nil {
 		res = append(res, err)
@@ -146,6 +157,10 @@ func (m *WritableVirtualMachineWithConfigContext) Validate(formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.validateURL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateVcpus(formats); err != nil {
 		res = append(res, err)
 	}
@@ -153,6 +168,15 @@ func (m *WritableVirtualMachineWithConfigContext) Validate(formats strfmt.Regist
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *WritableVirtualMachineWithConfigContext) validateCluster(formats strfmt.Registry) error {
+
+	if err := validate.Required("cluster", "body", m.Cluster); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -218,15 +242,15 @@ func (m *WritableVirtualMachineWithConfigContext) validateMemory(formats strfmt.
 
 func (m *WritableVirtualMachineWithConfigContext) validateName(formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Name) { // not required
-		return nil
-	}
-
-	if err := validate.MinLength("name", "body", string(m.Name), 1); err != nil {
+	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("name", "body", string(m.Name), 64); err != nil {
+	if err := validate.MinLength("name", "body", string(*m.Name), 1); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("name", "body", string(*m.Name), 64); err != nil {
 		return err
 	}
 
@@ -295,11 +319,32 @@ func (m *WritableVirtualMachineWithConfigContext) validateTags(formats strfmt.Re
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
-
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
 		}
 
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *WritableVirtualMachineWithConfigContext) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
 	}
 
 	return nil

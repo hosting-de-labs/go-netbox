@@ -20,6 +20,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -38,6 +39,18 @@ type IPAddress struct {
 	// Required: true
 	Address *string `json:"address"`
 
+	// Assigned object
+	// Read Only: true
+	AssignedObject map[string]string `json:"assigned_object,omitempty"`
+
+	// Assigned object id
+	// Maximum: 2.147483647e+09
+	// Minimum: 0
+	AssignedObjectID *int64 `json:"assigned_object_id,omitempty"`
+
+	// Assigned object type
+	AssignedObjectType string `json:"assigned_object_type,omitempty"`
+
 	// Created
 	// Read Only: true
 	// Format: date
@@ -47,7 +60,7 @@ type IPAddress struct {
 	CustomFields interface{} `json:"custom_fields,omitempty"`
 
 	// Description
-	// Max Length: 100
+	// Max Length: 200
 	Description string `json:"description,omitempty"`
 
 	// DNS Name
@@ -63,9 +76,6 @@ type IPAddress struct {
 	// ID
 	// Read Only: true
 	ID int64 `json:"id,omitempty"`
-
-	// interface
-	Interface *IPAddressInterface `json:"interface,omitempty"`
 
 	// Last updated
 	// Read Only: true
@@ -85,10 +95,15 @@ type IPAddress struct {
 	Status *IPAddressStatus `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags"`
 
 	// tenant
 	Tenant *NestedTenant `json:"tenant,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 
 	// vrf
 	Vrf *NestedVRF `json:"vrf,omitempty"`
@@ -99,6 +114,10 @@ func (m *IPAddress) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAddress(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAssignedObjectID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -115,10 +134,6 @@ func (m *IPAddress) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateFamily(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateInterface(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -150,6 +165,10 @@ func (m *IPAddress) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateURL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateVrf(formats); err != nil {
 		res = append(res, err)
 	}
@@ -163,6 +182,23 @@ func (m *IPAddress) Validate(formats strfmt.Registry) error {
 func (m *IPAddress) validateAddress(formats strfmt.Registry) error {
 
 	if err := validate.Required("address", "body", m.Address); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *IPAddress) validateAssignedObjectID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AssignedObjectID) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("assigned_object_id", "body", int64(*m.AssignedObjectID), 0, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("assigned_object_id", "body", int64(*m.AssignedObjectID), 2.147483647e+09, false); err != nil {
 		return err
 	}
 
@@ -188,7 +224,7 @@ func (m *IPAddress) validateDescription(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MaxLength("description", "body", string(m.Description), 100); err != nil {
+	if err := validate.MaxLength("description", "body", string(m.Description), 200); err != nil {
 		return err
 	}
 
@@ -222,24 +258,6 @@ func (m *IPAddress) validateFamily(formats strfmt.Registry) error {
 		if err := m.Family.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("family")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *IPAddress) validateInterface(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Interface) { // not required
-		return nil
-	}
-
-	if m.Interface != nil {
-		if err := m.Interface.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("interface")
 			}
 			return err
 		}
@@ -340,9 +358,17 @@ func (m *IPAddress) validateTags(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
 
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
 		}
 
 	}
@@ -363,6 +389,19 @@ func (m *IPAddress) validateTenant(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *IPAddress) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
 	}
 
 	return nil
@@ -410,10 +449,12 @@ type IPAddressFamily struct {
 
 	// label
 	// Required: true
+	// Enum: [IPv4 IPv6]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [4 6]
 	Value *int64 `json:"value"`
 }
 
@@ -435,18 +476,77 @@ func (m *IPAddressFamily) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var ipAddressFamilyTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["IPv4","IPv6"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		ipAddressFamilyTypeLabelPropEnum = append(ipAddressFamilyTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// IPAddressFamilyLabelIPV4 captures enum value "IPv4"
+	IPAddressFamilyLabelIPV4 string = "IPv4"
+
+	// IPAddressFamilyLabelIPV6 captures enum value "IPv6"
+	IPAddressFamilyLabelIPV6 string = "IPv6"
+)
+
+// prop value enum
+func (m *IPAddressFamily) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, ipAddressFamilyTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *IPAddressFamily) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("family"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("family"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var ipAddressFamilyTypeValuePropEnum []interface{}
+
+func init() {
+	var res []int64
+	if err := json.Unmarshal([]byte(`[4,6]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		ipAddressFamilyTypeValuePropEnum = append(ipAddressFamilyTypeValuePropEnum, v)
+	}
+}
+
+// prop value enum
+func (m *IPAddressFamily) validateValueEnum(path, location string, value int64) error {
+	if err := validate.Enum(path, location, value, ipAddressFamilyTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *IPAddressFamily) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("family"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("family"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 
@@ -477,10 +577,12 @@ type IPAddressRole struct {
 
 	// label
 	// Required: true
+	// Enum: [Loopback Secondary Anycast VIP VRRP HSRP GLBP CARP]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [loopback secondary anycast vip vrrp hsrp glbp carp]
 	Value *string `json:"value"`
 }
 
@@ -502,18 +604,122 @@ func (m *IPAddressRole) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var ipAddressRoleTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Loopback","Secondary","Anycast","VIP","VRRP","HSRP","GLBP","CARP"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		ipAddressRoleTypeLabelPropEnum = append(ipAddressRoleTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// IPAddressRoleLabelLoopback captures enum value "Loopback"
+	IPAddressRoleLabelLoopback string = "Loopback"
+
+	// IPAddressRoleLabelSecondary captures enum value "Secondary"
+	IPAddressRoleLabelSecondary string = "Secondary"
+
+	// IPAddressRoleLabelAnycast captures enum value "Anycast"
+	IPAddressRoleLabelAnycast string = "Anycast"
+
+	// IPAddressRoleLabelVIP captures enum value "VIP"
+	IPAddressRoleLabelVIP string = "VIP"
+
+	// IPAddressRoleLabelVRRP captures enum value "VRRP"
+	IPAddressRoleLabelVRRP string = "VRRP"
+
+	// IPAddressRoleLabelHSRP captures enum value "HSRP"
+	IPAddressRoleLabelHSRP string = "HSRP"
+
+	// IPAddressRoleLabelGLBP captures enum value "GLBP"
+	IPAddressRoleLabelGLBP string = "GLBP"
+
+	// IPAddressRoleLabelCARP captures enum value "CARP"
+	IPAddressRoleLabelCARP string = "CARP"
+)
+
+// prop value enum
+func (m *IPAddressRole) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, ipAddressRoleTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *IPAddressRole) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("role"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("role"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var ipAddressRoleTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["loopback","secondary","anycast","vip","vrrp","hsrp","glbp","carp"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		ipAddressRoleTypeValuePropEnum = append(ipAddressRoleTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// IPAddressRoleValueLoopback captures enum value "loopback"
+	IPAddressRoleValueLoopback string = "loopback"
+
+	// IPAddressRoleValueSecondary captures enum value "secondary"
+	IPAddressRoleValueSecondary string = "secondary"
+
+	// IPAddressRoleValueAnycast captures enum value "anycast"
+	IPAddressRoleValueAnycast string = "anycast"
+
+	// IPAddressRoleValueVip captures enum value "vip"
+	IPAddressRoleValueVip string = "vip"
+
+	// IPAddressRoleValueVrrp captures enum value "vrrp"
+	IPAddressRoleValueVrrp string = "vrrp"
+
+	// IPAddressRoleValueHsrp captures enum value "hsrp"
+	IPAddressRoleValueHsrp string = "hsrp"
+
+	// IPAddressRoleValueGlbp captures enum value "glbp"
+	IPAddressRoleValueGlbp string = "glbp"
+
+	// IPAddressRoleValueCarp captures enum value "carp"
+	IPAddressRoleValueCarp string = "carp"
+)
+
+// prop value enum
+func (m *IPAddressRole) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, ipAddressRoleTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *IPAddressRole) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("role"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("role"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 
@@ -544,10 +750,12 @@ type IPAddressStatus struct {
 
 	// label
 	// Required: true
+	// Enum: [Active Reserved Deprecated DHCP SLAAC]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [active reserved deprecated dhcp slaac]
 	Value *string `json:"value"`
 }
 
@@ -569,18 +777,104 @@ func (m *IPAddressStatus) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var ipAddressStatusTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Active","Reserved","Deprecated","DHCP","SLAAC"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		ipAddressStatusTypeLabelPropEnum = append(ipAddressStatusTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// IPAddressStatusLabelActive captures enum value "Active"
+	IPAddressStatusLabelActive string = "Active"
+
+	// IPAddressStatusLabelReserved captures enum value "Reserved"
+	IPAddressStatusLabelReserved string = "Reserved"
+
+	// IPAddressStatusLabelDeprecated captures enum value "Deprecated"
+	IPAddressStatusLabelDeprecated string = "Deprecated"
+
+	// IPAddressStatusLabelDHCP captures enum value "DHCP"
+	IPAddressStatusLabelDHCP string = "DHCP"
+
+	// IPAddressStatusLabelSLAAC captures enum value "SLAAC"
+	IPAddressStatusLabelSLAAC string = "SLAAC"
+)
+
+// prop value enum
+func (m *IPAddressStatus) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, ipAddressStatusTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *IPAddressStatus) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("status"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var ipAddressStatusTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["active","reserved","deprecated","dhcp","slaac"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		ipAddressStatusTypeValuePropEnum = append(ipAddressStatusTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// IPAddressStatusValueActive captures enum value "active"
+	IPAddressStatusValueActive string = "active"
+
+	// IPAddressStatusValueReserved captures enum value "reserved"
+	IPAddressStatusValueReserved string = "reserved"
+
+	// IPAddressStatusValueDeprecated captures enum value "deprecated"
+	IPAddressStatusValueDeprecated string = "deprecated"
+
+	// IPAddressStatusValueDhcp captures enum value "dhcp"
+	IPAddressStatusValueDhcp string = "dhcp"
+
+	// IPAddressStatusValueSlaac captures enum value "slaac"
+	IPAddressStatusValueSlaac string = "slaac"
+)
+
+// prop value enum
+func (m *IPAddressStatus) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, ipAddressStatusTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *IPAddressStatus) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("status"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

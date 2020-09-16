@@ -20,6 +20,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
+
 	"github.com/go-openapi/errors"
 	strfmt "github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
@@ -36,7 +38,7 @@ type ObjectChange struct {
 	// Changed object
 	//
 	//
-	//         Serialize a nested representation of the changed object.
+	// Serialize a nested representation of the changed object.
 	//
 	// Read Only: true
 	ChangedObject map[string]string `json:"changed_object,omitempty"`
@@ -69,6 +71,11 @@ type ObjectChange struct {
 	// Format: date-time
 	Time strfmt.DateTime `json:"time,omitempty"`
 
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
+
 	// user
 	User *NestedUser `json:"user,omitempty"`
 
@@ -95,6 +102,10 @@ func (m *ObjectChange) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTime(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -173,6 +184,19 @@ func (m *ObjectChange) validateTime(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *ObjectChange) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *ObjectChange) validateUser(formats strfmt.Registry) error {
 
 	if swag.IsZero(m.User) { // not required
@@ -228,10 +252,12 @@ type ObjectChangeAction struct {
 
 	// label
 	// Required: true
+	// Enum: [Created Updated Deleted]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [create update delete]
 	Value *string `json:"value"`
 }
 
@@ -253,18 +279,92 @@ func (m *ObjectChangeAction) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var objectChangeActionTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Created","Updated","Deleted"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		objectChangeActionTypeLabelPropEnum = append(objectChangeActionTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// ObjectChangeActionLabelCreated captures enum value "Created"
+	ObjectChangeActionLabelCreated string = "Created"
+
+	// ObjectChangeActionLabelUpdated captures enum value "Updated"
+	ObjectChangeActionLabelUpdated string = "Updated"
+
+	// ObjectChangeActionLabelDeleted captures enum value "Deleted"
+	ObjectChangeActionLabelDeleted string = "Deleted"
+)
+
+// prop value enum
+func (m *ObjectChangeAction) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, objectChangeActionTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *ObjectChangeAction) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("action"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("action"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var objectChangeActionTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["create","update","delete"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		objectChangeActionTypeValuePropEnum = append(objectChangeActionTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// ObjectChangeActionValueCreate captures enum value "create"
+	ObjectChangeActionValueCreate string = "create"
+
+	// ObjectChangeActionValueUpdate captures enum value "update"
+	ObjectChangeActionValueUpdate string = "update"
+
+	// ObjectChangeActionValueDelete captures enum value "delete"
+	ObjectChangeActionValueDelete string = "delete"
+)
+
+// prop value enum
+func (m *ObjectChangeAction) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, objectChangeActionTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *ObjectChangeAction) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("action"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("action"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

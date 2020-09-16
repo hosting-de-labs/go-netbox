@@ -20,6 +20,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -33,6 +34,8 @@ import (
 type Site struct {
 
 	// ASN
+	//
+	// 32-bit autonomous system number
 	// Maximum: 4.294967295e+09
 	// Minimum: 1
 	Asn *int64 `json:"asn,omitempty"`
@@ -66,7 +69,7 @@ type Site struct {
 	CustomFields interface{} `json:"custom_fields,omitempty"`
 
 	// Description
-	// Max Length: 100
+	// Max Length: 200
 	Description string `json:"description,omitempty"`
 
 	// Device count
@@ -74,6 +77,8 @@ type Site struct {
 	DeviceCount int64 `json:"device_count,omitempty"`
 
 	// Facility
+	//
+	// Local facility ID or description
 	// Max Length: 50
 	Facility string `json:"facility,omitempty"`
 
@@ -87,9 +92,13 @@ type Site struct {
 	LastUpdated strfmt.DateTime `json:"last_updated,omitempty"`
 
 	// Latitude
+	//
+	// GPS coordinate (latitude)
 	Latitude *string `json:"latitude,omitempty"`
 
 	// Longitude
+	//
+	// GPS coordinate (longitude)
 	Longitude *string `json:"longitude,omitempty"`
 
 	// Name
@@ -128,13 +137,18 @@ type Site struct {
 	Status *SiteStatus `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags"`
 
 	// tenant
 	Tenant *NestedTenant `json:"tenant,omitempty"`
 
 	// Time zone
 	TimeZone string `json:"time_zone,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 
 	// Virtualmachine count
 	// Read Only: true
@@ -210,6 +224,10 @@ func (m *Site) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTenant(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -298,7 +316,7 @@ func (m *Site) validateDescription(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MaxLength("description", "body", string(m.Description), 100); err != nil {
+	if err := validate.MaxLength("description", "body", string(m.Description), 200); err != nil {
 		return err
 	}
 
@@ -438,9 +456,17 @@ func (m *Site) validateTags(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
 
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
 		}
 
 	}
@@ -461,6 +487,19 @@ func (m *Site) validateTenant(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *Site) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
 	}
 
 	return nil
@@ -490,10 +529,12 @@ type SiteStatus struct {
 
 	// label
 	// Required: true
+	// Enum: [Planned Staging Active Decommissioning Retired]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [planned staging active decommissioning retired]
 	Value *string `json:"value"`
 }
 
@@ -515,18 +556,104 @@ func (m *SiteStatus) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var siteStatusTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Planned","Staging","Active","Decommissioning","Retired"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		siteStatusTypeLabelPropEnum = append(siteStatusTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// SiteStatusLabelPlanned captures enum value "Planned"
+	SiteStatusLabelPlanned string = "Planned"
+
+	// SiteStatusLabelStaging captures enum value "Staging"
+	SiteStatusLabelStaging string = "Staging"
+
+	// SiteStatusLabelActive captures enum value "Active"
+	SiteStatusLabelActive string = "Active"
+
+	// SiteStatusLabelDecommissioning captures enum value "Decommissioning"
+	SiteStatusLabelDecommissioning string = "Decommissioning"
+
+	// SiteStatusLabelRetired captures enum value "Retired"
+	SiteStatusLabelRetired string = "Retired"
+)
+
+// prop value enum
+func (m *SiteStatus) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, siteStatusTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *SiteStatus) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("status"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var siteStatusTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["planned","staging","active","decommissioning","retired"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		siteStatusTypeValuePropEnum = append(siteStatusTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// SiteStatusValuePlanned captures enum value "planned"
+	SiteStatusValuePlanned string = "planned"
+
+	// SiteStatusValueStaging captures enum value "staging"
+	SiteStatusValueStaging string = "staging"
+
+	// SiteStatusValueActive captures enum value "active"
+	SiteStatusValueActive string = "active"
+
+	// SiteStatusValueDecommissioning captures enum value "decommissioning"
+	SiteStatusValueDecommissioning string = "decommissioning"
+
+	// SiteStatusValueRetired captures enum value "retired"
+	SiteStatusValueRetired string = "retired"
+)
+
+// prop value enum
+func (m *SiteStatus) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, siteStatusTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *SiteStatus) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("status"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

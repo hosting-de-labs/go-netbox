@@ -58,10 +58,12 @@ type WritableDeviceWithConfigContext struct {
 	CustomFields interface{} `json:"custom_fields,omitempty"`
 
 	// Device role
-	DeviceRole int64 `json:"device_role,omitempty"`
+	// Required: true
+	DeviceRole *int64 `json:"device_role"`
 
 	// Device type
-	DeviceType int64 `json:"device_type,omitempty"`
+	// Required: true
+	DeviceType *int64 `json:"device_type"`
 
 	// Display name
 	// Read Only: true
@@ -118,17 +120,23 @@ type WritableDeviceWithConfigContext struct {
 	Serial string `json:"serial,omitempty"`
 
 	// Site
-	Site int64 `json:"site,omitempty"`
+	// Required: true
+	Site *int64 `json:"site"`
 
 	// Status
 	// Enum: [offline active planned staged failed inventory decommissioning]
 	Status string `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags"`
 
 	// Tenant
 	Tenant *int64 `json:"tenant,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 
 	// Vc position
 	// Maximum: 255
@@ -156,6 +164,14 @@ func (m *WritableDeviceWithConfigContext) Validate(formats strfmt.Registry) erro
 		res = append(res, err)
 	}
 
+	if err := m.validateDeviceRole(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDeviceType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateFace(formats); err != nil {
 		res = append(res, err)
 	}
@@ -180,11 +196,19 @@ func (m *WritableDeviceWithConfigContext) Validate(formats strfmt.Registry) erro
 		res = append(res, err)
 	}
 
+	if err := m.validateSite(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateStatus(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateTags(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -222,6 +246,24 @@ func (m *WritableDeviceWithConfigContext) validateCreated(formats strfmt.Registr
 	}
 
 	if err := validate.FormatOf("created", "body", "date", m.Created.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableDeviceWithConfigContext) validateDeviceRole(formats strfmt.Registry) error {
+
+	if err := validate.Required("device_role", "body", m.DeviceRole); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableDeviceWithConfigContext) validateDeviceType(formats strfmt.Registry) error {
+
+	if err := validate.Required("device_type", "body", m.DeviceType); err != nil {
 		return err
 	}
 
@@ -345,6 +387,15 @@ func (m *WritableDeviceWithConfigContext) validateSerial(formats strfmt.Registry
 	return nil
 }
 
+func (m *WritableDeviceWithConfigContext) validateSite(formats strfmt.Registry) error {
+
+	if err := validate.Required("site", "body", m.Site); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 var writableDeviceWithConfigContextTypeStatusPropEnum []interface{}
 
 func init() {
@@ -410,11 +461,32 @@ func (m *WritableDeviceWithConfigContext) validateTags(formats strfmt.Registry) 
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
-
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
 		}
 
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *WritableDeviceWithConfigContext) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
 	}
 
 	return nil
