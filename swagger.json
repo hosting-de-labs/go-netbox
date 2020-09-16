@@ -27706,7 +27706,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "name",
@@ -27999,7 +27999,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "name",
@@ -28027,7 +28027,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "user",
@@ -28041,7 +28041,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "group",
@@ -28362,7 +28362,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "username",
@@ -28418,7 +28418,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "group",
