@@ -18910,7 +18910,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "type": "string"
+          "type": "integer"
         }
       ]
     },
@@ -18924,7 +18924,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "name",
@@ -18952,7 +18952,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "region",
@@ -18966,7 +18966,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "site",
@@ -18980,7 +18980,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "role",
@@ -18994,7 +18994,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "platform",
@@ -19008,7 +19008,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "cluster_group",
@@ -19022,14 +19022,14 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "tenant_group_id",
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "tenant_group",
@@ -19043,7 +19043,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "tenant",
@@ -19448,7 +19448,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "content_type",
@@ -19762,7 +19762,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "type",
@@ -20076,7 +20076,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "content_type",
@@ -20090,7 +20090,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "name",
@@ -20418,7 +20418,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "created",
@@ -20679,7 +20679,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "user",
@@ -20721,7 +20721,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "object_repr",
@@ -21077,7 +21077,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "type": "string"
+          "type": "integer"
         }
       ]
     },
@@ -21100,7 +21100,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "type": "string"
+          "type": "integer"
         }
       ]
     },
@@ -21139,7 +21139,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "type": "string"
+          "type": "integer"
         }
       ]
     },
@@ -21153,7 +21153,7 @@
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "name",
