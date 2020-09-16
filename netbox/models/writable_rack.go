@@ -64,10 +64,14 @@ type WritableRack struct {
 	DisplayName string `json:"display_name,omitempty"`
 
 	// Facility ID
+	//
+	// Locally-assigned identifier
 	// Max Length: 50
 	FacilityID *string `json:"facility_id,omitempty"`
 
 	// Group
+	//
+	// Assigned group
 	Group *int64 `json:"group,omitempty"`
 
 	// ID
@@ -86,6 +90,8 @@ type WritableRack struct {
 	Name *string `json:"name"`
 
 	// Outer depth
+	//
+	// Outer dimension of rack (depth)
 	// Maximum: 32767
 	// Minimum: 0
 	OuterDepth *int64 `json:"outer_depth,omitempty"`
@@ -95,6 +101,8 @@ type WritableRack struct {
 	OuterUnit string `json:"outer_unit,omitempty"`
 
 	// Outer width
+	//
+	// Outer dimension of rack (width)
 	// Maximum: 32767
 	// Minimum: 0
 	OuterWidth *int64 `json:"outer_width,omitempty"`
@@ -104,6 +112,8 @@ type WritableRack struct {
 	PowerfeedCount int64 `json:"powerfeed_count,omitempty"`
 
 	// Role
+	//
+	// Functional role
 	Role *int64 `json:"role,omitempty"`
 
 	// Serial number
@@ -119,7 +129,7 @@ type WritableRack struct {
 	Status string `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags,omitempty"`
 
 	// Tenant
 	Tenant *int64 `json:"tenant,omitempty"`
@@ -129,14 +139,21 @@ type WritableRack struct {
 	Type string `json:"type,omitempty"`
 
 	// Height (U)
+	//
+	// Height in rack units
 	// Maximum: 100
 	// Minimum: 1
 	UHeight int64 `json:"u_height,omitempty"`
 
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
+
 	// Width
 	//
 	// Rail-to-rail width
-	// Enum: [19 23]
+	// Enum: [10 19 21 23]
 	Width int64 `json:"width,omitempty"`
 }
 
@@ -197,6 +214,10 @@ func (m *WritableRack) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateUHeight(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -437,9 +458,17 @@ func (m *WritableRack) validateTags(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
 
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
 		}
 
 	}
@@ -516,11 +545,24 @@ func (m *WritableRack) validateUHeight(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *WritableRack) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 var writableRackTypeWidthPropEnum []interface{}
 
 func init() {
 	var res []int64
-	if err := json.Unmarshal([]byte(`[19,23]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`[10,19,21,23]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

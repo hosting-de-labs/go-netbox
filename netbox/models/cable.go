@@ -21,6 +21,7 @@ package models
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	strfmt "github.com/go-openapi/strfmt"
@@ -56,6 +57,9 @@ type Cable struct {
 	// status
 	Status *CableStatus `json:"status,omitempty"`
 
+	// tags
+	Tags []*NestedTag `json:"tags,omitempty"`
+
 	// Termination a
 	// Read Only: true
 	Terminationa map[string]string `json:"termination_a,omitempty"`
@@ -85,8 +89,13 @@ type Cable struct {
 	TerminationbType *string `json:"termination_b_type"`
 
 	// Type
-	// Enum: [cat3 cat5 cat5e cat6 cat6a cat7 dac-active dac-passive coaxial mmf mmf-om1 mmf-om2 mmf-om3 mmf-om4 smf smf-os1 smf-os2 aoc power]
+	// Enum: [cat3 cat5 cat5e cat6 cat6a cat7 dac-active dac-passive mrj21-trunk coaxial mmf mmf-om1 mmf-om2 mmf-om3 mmf-om4 smf smf-os1 smf-os2 aoc power]
 	Type string `json:"type,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this cable
@@ -113,6 +122,10 @@ func (m *Cable) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateTags(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateTerminationaID(formats); err != nil {
 		res = append(res, err)
 	}
@@ -130,6 +143,10 @@ func (m *Cable) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -222,6 +239,31 @@ func (m *Cable) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Cable) validateTags(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Tags) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
+
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func (m *Cable) validateTerminationaID(formats strfmt.Registry) error {
 
 	if err := validate.Required("termination_a_id", "body", m.TerminationaID); err != nil {
@@ -278,7 +320,7 @@ var cableTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["cat3","cat5","cat5e","cat6","cat6a","cat7","dac-active","dac-passive","coaxial","mmf","mmf-om1","mmf-om2","mmf-om3","mmf-om4","smf","smf-os1","smf-os2","aoc","power"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["cat3","cat5","cat5e","cat6","cat6a","cat7","dac-active","dac-passive","mrj21-trunk","coaxial","mmf","mmf-om1","mmf-om2","mmf-om3","mmf-om4","smf","smf-os1","smf-os2","aoc","power"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -311,6 +353,9 @@ const (
 
 	// CableTypeDacPassive captures enum value "dac-passive"
 	CableTypeDacPassive string = "dac-passive"
+
+	// CableTypeMrj21Trunk captures enum value "mrj21-trunk"
+	CableTypeMrj21Trunk string = "mrj21-trunk"
 
 	// CableTypeCoaxial captures enum value "coaxial"
 	CableTypeCoaxial string = "coaxial"
@@ -368,6 +413,19 @@ func (m *Cable) validateType(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Cable) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
 func (m *Cable) MarshalBinary() ([]byte, error) {
 	if m == nil {
@@ -392,10 +450,12 @@ type CableLengthUnit struct {
 
 	// label
 	// Required: true
+	// Enum: [Meters Centimeters Feet Inches]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [m cm ft in]
 	Value *string `json:"value"`
 }
 
@@ -417,18 +477,98 @@ func (m *CableLengthUnit) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var cableLengthUnitTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Meters","Centimeters","Feet","Inches"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		cableLengthUnitTypeLabelPropEnum = append(cableLengthUnitTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// CableLengthUnitLabelMeters captures enum value "Meters"
+	CableLengthUnitLabelMeters string = "Meters"
+
+	// CableLengthUnitLabelCentimeters captures enum value "Centimeters"
+	CableLengthUnitLabelCentimeters string = "Centimeters"
+
+	// CableLengthUnitLabelFeet captures enum value "Feet"
+	CableLengthUnitLabelFeet string = "Feet"
+
+	// CableLengthUnitLabelInches captures enum value "Inches"
+	CableLengthUnitLabelInches string = "Inches"
+)
+
+// prop value enum
+func (m *CableLengthUnit) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, cableLengthUnitTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *CableLengthUnit) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("length_unit"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("length_unit"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var cableLengthUnitTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["m","cm","ft","in"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		cableLengthUnitTypeValuePropEnum = append(cableLengthUnitTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// CableLengthUnitValueM captures enum value "m"
+	CableLengthUnitValueM string = "m"
+
+	// CableLengthUnitValueCm captures enum value "cm"
+	CableLengthUnitValueCm string = "cm"
+
+	// CableLengthUnitValueFt captures enum value "ft"
+	CableLengthUnitValueFt string = "ft"
+
+	// CableLengthUnitValueIn captures enum value "in"
+	CableLengthUnitValueIn string = "in"
+)
+
+// prop value enum
+func (m *CableLengthUnit) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, cableLengthUnitTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *CableLengthUnit) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("length_unit"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("length_unit"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 
@@ -459,10 +599,12 @@ type CableStatus struct {
 
 	// label
 	// Required: true
+	// Enum: [Connected Planned Decommissioning]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [connected planned decommissioning]
 	Value *string `json:"value"`
 }
 
@@ -484,18 +626,92 @@ func (m *CableStatus) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var cableStatusTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Connected","Planned","Decommissioning"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		cableStatusTypeLabelPropEnum = append(cableStatusTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// CableStatusLabelConnected captures enum value "Connected"
+	CableStatusLabelConnected string = "Connected"
+
+	// CableStatusLabelPlanned captures enum value "Planned"
+	CableStatusLabelPlanned string = "Planned"
+
+	// CableStatusLabelDecommissioning captures enum value "Decommissioning"
+	CableStatusLabelDecommissioning string = "Decommissioning"
+)
+
+// prop value enum
+func (m *CableStatus) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, cableStatusTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *CableStatus) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("status"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var cableStatusTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["connected","planned","decommissioning"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		cableStatusTypeValuePropEnum = append(cableStatusTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// CableStatusValueConnected captures enum value "connected"
+	CableStatusValueConnected string = "connected"
+
+	// CableStatusValuePlanned captures enum value "planned"
+	CableStatusValuePlanned string = "planned"
+
+	// CableStatusValueDecommissioning captures enum value "decommissioning"
+	CableStatusValueDecommissioning string = "decommissioning"
+)
+
+// prop value enum
+func (m *CableStatus) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, cableStatusTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *CableStatus) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("status"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

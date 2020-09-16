@@ -38,13 +38,17 @@ func NewDcimRacksElevationParams() *DcimRacksElevationParams {
 	var (
 		expandDevicesDefault = bool(true)
 		faceDefault          = string("front")
+		includeImagesDefault = bool(true)
+		legendWidthDefault   = int64(30)
 		renderDefault        = string("json")
-		unitHeightDefault    = int64(20)
-		unitWidthDefault     = int64(230)
+		unitHeightDefault    = int64(22)
+		unitWidthDefault     = int64(220)
 	)
 	return &DcimRacksElevationParams{
 		ExpandDevices: &expandDevicesDefault,
 		Face:          &faceDefault,
+		IncludeImages: &includeImagesDefault,
+		LegendWidth:   &legendWidthDefault,
 		Render:        &renderDefault,
 		UnitHeight:    &unitHeightDefault,
 		UnitWidth:     &unitWidthDefault,
@@ -59,13 +63,17 @@ func NewDcimRacksElevationParamsWithTimeout(timeout time.Duration) *DcimRacksEle
 	var (
 		expandDevicesDefault = bool(true)
 		faceDefault          = string("front")
+		includeImagesDefault = bool(true)
+		legendWidthDefault   = int64(30)
 		renderDefault        = string("json")
-		unitHeightDefault    = int64(20)
-		unitWidthDefault     = int64(230)
+		unitHeightDefault    = int64(22)
+		unitWidthDefault     = int64(220)
 	)
 	return &DcimRacksElevationParams{
 		ExpandDevices: &expandDevicesDefault,
 		Face:          &faceDefault,
+		IncludeImages: &includeImagesDefault,
+		LegendWidth:   &legendWidthDefault,
 		Render:        &renderDefault,
 		UnitHeight:    &unitHeightDefault,
 		UnitWidth:     &unitWidthDefault,
@@ -80,13 +88,17 @@ func NewDcimRacksElevationParamsWithContext(ctx context.Context) *DcimRacksEleva
 	var (
 		expandDevicesDefault = bool(true)
 		faceDefault          = string("front")
+		includeImagesDefault = bool(true)
+		legendWidthDefault   = int64(30)
 		renderDefault        = string("json")
-		unitHeightDefault    = int64(20)
-		unitWidthDefault     = int64(230)
+		unitHeightDefault    = int64(22)
+		unitWidthDefault     = int64(220)
 	)
 	return &DcimRacksElevationParams{
 		ExpandDevices: &expandDevicesDefault,
 		Face:          &faceDefault,
+		IncludeImages: &includeImagesDefault,
+		LegendWidth:   &legendWidthDefault,
 		Render:        &renderDefault,
 		UnitHeight:    &unitHeightDefault,
 		UnitWidth:     &unitWidthDefault,
@@ -101,13 +113,17 @@ func NewDcimRacksElevationParamsWithHTTPClient(client *http.Client) *DcimRacksEl
 	var (
 		expandDevicesDefault = bool(true)
 		faceDefault          = string("front")
+		includeImagesDefault = bool(true)
+		legendWidthDefault   = int64(30)
 		renderDefault        = string("json")
-		unitHeightDefault    = int64(20)
-		unitWidthDefault     = int64(230)
+		unitHeightDefault    = int64(22)
+		unitWidthDefault     = int64(220)
 	)
 	return &DcimRacksElevationParams{
 		ExpandDevices: &expandDevicesDefault,
 		Face:          &faceDefault,
+		IncludeImages: &includeImagesDefault,
+		LegendWidth:   &legendWidthDefault,
 		Render:        &renderDefault,
 		UnitHeight:    &unitHeightDefault,
 		UnitWidth:     &unitWidthDefault,
@@ -131,6 +147,12 @@ type DcimRacksElevationParams struct {
 
 	*/
 	ID int64
+	/*IncludeImages*/
+	IncludeImages *bool
+	/*LegendWidth*/
+	LegendWidth *int64
+	/*Q*/
+	Q *string
 	/*Render*/
 	Render *string
 	/*UnitHeight*/
@@ -218,6 +240,39 @@ func (o *DcimRacksElevationParams) WithID(id int64) *DcimRacksElevationParams {
 // SetID adds the id to the dcim racks elevation params
 func (o *DcimRacksElevationParams) SetID(id int64) {
 	o.ID = id
+}
+
+// WithIncludeImages adds the includeImages to the dcim racks elevation params
+func (o *DcimRacksElevationParams) WithIncludeImages(includeImages *bool) *DcimRacksElevationParams {
+	o.SetIncludeImages(includeImages)
+	return o
+}
+
+// SetIncludeImages adds the includeImages to the dcim racks elevation params
+func (o *DcimRacksElevationParams) SetIncludeImages(includeImages *bool) {
+	o.IncludeImages = includeImages
+}
+
+// WithLegendWidth adds the legendWidth to the dcim racks elevation params
+func (o *DcimRacksElevationParams) WithLegendWidth(legendWidth *int64) *DcimRacksElevationParams {
+	o.SetLegendWidth(legendWidth)
+	return o
+}
+
+// SetLegendWidth adds the legendWidth to the dcim racks elevation params
+func (o *DcimRacksElevationParams) SetLegendWidth(legendWidth *int64) {
+	o.LegendWidth = legendWidth
+}
+
+// WithQ adds the q to the dcim racks elevation params
+func (o *DcimRacksElevationParams) WithQ(q *string) *DcimRacksElevationParams {
+	o.SetQ(q)
+	return o
+}
+
+// SetQ adds the q to the dcim racks elevation params
+func (o *DcimRacksElevationParams) SetQ(q *string) {
+	o.Q = q
 }
 
 // WithRender adds the render to the dcim racks elevation params
@@ -312,6 +367,54 @@ func (o *DcimRacksElevationParams) WriteToRequest(r runtime.ClientRequest, reg s
 	// path param id
 	if err := r.SetPathParam("id", swag.FormatInt64(o.ID)); err != nil {
 		return err
+	}
+
+	if o.IncludeImages != nil {
+
+		// query param include_images
+		var qrIncludeImages bool
+		if o.IncludeImages != nil {
+			qrIncludeImages = *o.IncludeImages
+		}
+		qIncludeImages := swag.FormatBool(qrIncludeImages)
+		if qIncludeImages != "" {
+			if err := r.SetQueryParam("include_images", qIncludeImages); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	if o.LegendWidth != nil {
+
+		// query param legend_width
+		var qrLegendWidth int64
+		if o.LegendWidth != nil {
+			qrLegendWidth = *o.LegendWidth
+		}
+		qLegendWidth := swag.FormatInt64(qrLegendWidth)
+		if qLegendWidth != "" {
+			if err := r.SetQueryParam("legend_width", qLegendWidth); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	if o.Q != nil {
+
+		// query param q
+		var qrQ string
+		if o.Q != nil {
+			qrQ = *o.Q
+		}
+		qQ := qrQ
+		if qQ != "" {
+			if err := r.SetQueryParam("q", qQ); err != nil {
+				return err
+			}
+		}
+
 	}
 
 	if o.Render != nil {

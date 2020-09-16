@@ -78,10 +78,12 @@ type DcimInterfaceConnectionsListParams struct {
 
 	/*ConnectionStatus*/
 	ConnectionStatus *string
+	/*ConnectionStatusn*/
+	ConnectionStatusn *string
 	/*Device*/
 	Device *string
 	/*DeviceID*/
-	DeviceID *int64
+	DeviceID *string
 	/*Limit
 	  Number of results to return per page.
 
@@ -144,6 +146,17 @@ func (o *DcimInterfaceConnectionsListParams) SetConnectionStatus(connectionStatu
 	o.ConnectionStatus = connectionStatus
 }
 
+// WithConnectionStatusn adds the connectionStatusn to the dcim interface connections list params
+func (o *DcimInterfaceConnectionsListParams) WithConnectionStatusn(connectionStatusn *string) *DcimInterfaceConnectionsListParams {
+	o.SetConnectionStatusn(connectionStatusn)
+	return o
+}
+
+// SetConnectionStatusn adds the connectionStatusN to the dcim interface connections list params
+func (o *DcimInterfaceConnectionsListParams) SetConnectionStatusn(connectionStatusn *string) {
+	o.ConnectionStatusn = connectionStatusn
+}
+
 // WithDevice adds the device to the dcim interface connections list params
 func (o *DcimInterfaceConnectionsListParams) WithDevice(device *string) *DcimInterfaceConnectionsListParams {
 	o.SetDevice(device)
@@ -156,13 +169,13 @@ func (o *DcimInterfaceConnectionsListParams) SetDevice(device *string) {
 }
 
 // WithDeviceID adds the deviceID to the dcim interface connections list params
-func (o *DcimInterfaceConnectionsListParams) WithDeviceID(deviceID *int64) *DcimInterfaceConnectionsListParams {
+func (o *DcimInterfaceConnectionsListParams) WithDeviceID(deviceID *string) *DcimInterfaceConnectionsListParams {
 	o.SetDeviceID(deviceID)
 	return o
 }
 
 // SetDeviceID adds the deviceId to the dcim interface connections list params
-func (o *DcimInterfaceConnectionsListParams) SetDeviceID(deviceID *int64) {
+func (o *DcimInterfaceConnectionsListParams) SetDeviceID(deviceID *string) {
 	o.DeviceID = deviceID
 }
 
@@ -223,6 +236,22 @@ func (o *DcimInterfaceConnectionsListParams) WriteToRequest(r runtime.ClientRequ
 
 	}
 
+	if o.ConnectionStatusn != nil {
+
+		// query param connection_status__n
+		var qrConnectionStatusn string
+		if o.ConnectionStatusn != nil {
+			qrConnectionStatusn = *o.ConnectionStatusn
+		}
+		qConnectionStatusn := qrConnectionStatusn
+		if qConnectionStatusn != "" {
+			if err := r.SetQueryParam("connection_status__n", qConnectionStatusn); err != nil {
+				return err
+			}
+		}
+
+	}
+
 	if o.Device != nil {
 
 		// query param device
@@ -242,11 +271,11 @@ func (o *DcimInterfaceConnectionsListParams) WriteToRequest(r runtime.ClientRequ
 	if o.DeviceID != nil {
 
 		// query param device_id
-		var qrDeviceID int64
+		var qrDeviceID string
 		if o.DeviceID != nil {
 			qrDeviceID = *o.DeviceID
 		}
-		qDeviceID := swag.FormatInt64(qrDeviceID)
+		qDeviceID := qrDeviceID
 		if qDeviceID != "" {
 			if err := r.SetQueryParam("device_id", qDeviceID); err != nil {
 				return err

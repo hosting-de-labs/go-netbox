@@ -39,7 +39,7 @@ type WritableRackReservation struct {
 
 	// Description
 	// Required: true
-	// Max Length: 100
+	// Max Length: 200
 	// Min Length: 1
 	Description *string `json:"description"`
 
@@ -51,12 +51,20 @@ type WritableRackReservation struct {
 	// Required: true
 	Rack *int64 `json:"rack"`
 
+	// tags
+	Tags []*NestedTag `json:"tags,omitempty"`
+
 	// Tenant
 	Tenant *int64 `json:"tenant,omitempty"`
 
 	// units
 	// Required: true
 	Units []*int64 `json:"units"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 
 	// User
 	// Required: true
@@ -79,7 +87,15 @@ func (m *WritableRackReservation) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateTags(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateUnits(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -116,7 +132,7 @@ func (m *WritableRackReservation) validateDescription(formats strfmt.Registry) e
 		return err
 	}
 
-	if err := validate.MaxLength("description", "body", string(*m.Description), 100); err != nil {
+	if err := validate.MaxLength("description", "body", string(*m.Description), 200); err != nil {
 		return err
 	}
 
@@ -127,6 +143,31 @@ func (m *WritableRackReservation) validateRack(formats strfmt.Registry) error {
 
 	if err := validate.Required("rack", "body", m.Rack); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *WritableRackReservation) validateTags(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Tags) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
+
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -151,6 +192,19 @@ func (m *WritableRackReservation) validateUnits(formats strfmt.Registry) error {
 			return err
 		}
 
+	}
+
+	return nil
+}
+
+func (m *WritableRackReservation) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
 	}
 
 	return nil

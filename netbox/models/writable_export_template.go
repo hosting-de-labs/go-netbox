@@ -34,7 +34,7 @@ type WritableExportTemplate struct {
 
 	// Content type
 	// Required: true
-	ContentType *int64 `json:"content_type"`
+	ContentType *string `json:"content_type"`
 
 	// Description
 	// Max Length: 200
@@ -70,8 +70,13 @@ type WritableExportTemplate struct {
 	TemplateCode *string `json:"template_code"`
 
 	// Template language
-	// Enum: [django jinja2]
+	// Enum: [jinja2 django]
 	TemplateLanguage string `json:"template_language,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this writable export template
@@ -103,6 +108,10 @@ func (m *WritableExportTemplate) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTemplateLanguage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -194,7 +203,7 @@ var writableExportTemplateTypeTemplateLanguagePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["django","jinja2"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["jinja2","django"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -204,11 +213,11 @@ func init() {
 
 const (
 
-	// WritableExportTemplateTemplateLanguageDjango captures enum value "django"
-	WritableExportTemplateTemplateLanguageDjango string = "django"
-
 	// WritableExportTemplateTemplateLanguageJinja2 captures enum value "jinja2"
 	WritableExportTemplateTemplateLanguageJinja2 string = "jinja2"
+
+	// WritableExportTemplateTemplateLanguageDjango captures enum value "django"
+	WritableExportTemplateTemplateLanguageDjango string = "django"
 )
 
 // prop value enum
@@ -227,6 +236,19 @@ func (m *WritableExportTemplate) validateTemplateLanguage(formats strfmt.Registr
 
 	// value enum
 	if err := m.validateTemplateLanguageEnum("template_language", "body", m.TemplateLanguage); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableExportTemplate) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
 		return err
 	}
 

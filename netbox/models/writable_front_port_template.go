@@ -32,6 +32,10 @@ import (
 // swagger:model WritableFrontPortTemplate
 type WritableFrontPortTemplate struct {
 
+	// Description
+	// Max Length: 200
+	Description string `json:"description,omitempty"`
+
 	// Device type
 	// Required: true
 	DeviceType *int64 `json:"device_type"`
@@ -39,6 +43,12 @@ type WritableFrontPortTemplate struct {
 	// ID
 	// Read Only: true
 	ID int64 `json:"id,omitempty"`
+
+	// Label
+	//
+	// Physical label
+	// Max Length: 64
+	Label string `json:"label,omitempty"`
 
 	// Name
 	// Required: true
@@ -57,15 +67,28 @@ type WritableFrontPortTemplate struct {
 
 	// Type
 	// Required: true
-	// Enum: [8p8c 110-punch bnc fc lc lc-apc lsh lsh-apc mpo mtrj sc sc-apc st]
+	// Enum: [8p8c 8p6c 8p4c 8p2c 110-punch bnc mrj21 fc lc lc-apc lsh lsh-apc mpo mtrj sc sc-apc st]
 	Type *string `json:"type"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 }
 
 // Validate validates this writable front port template
 func (m *WritableFrontPortTemplate) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateDescription(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateDeviceType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLabel(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -85,15 +108,45 @@ func (m *WritableFrontPortTemplate) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateURL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
+func (m *WritableFrontPortTemplate) validateDescription(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Description) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("description", "body", string(m.Description), 200); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *WritableFrontPortTemplate) validateDeviceType(formats strfmt.Registry) error {
 
 	if err := validate.Required("device_type", "body", m.DeviceType); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableFrontPortTemplate) validateLabel(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Label) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("label", "body", string(m.Label), 64); err != nil {
 		return err
 	}
 
@@ -147,7 +200,7 @@ var writableFrontPortTemplateTypeTypePropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["8p8c","110-punch","bnc","fc","lc","lc-apc","lsh","lsh-apc","mpo","mtrj","sc","sc-apc","st"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["8p8c","8p6c","8p4c","8p2c","110-punch","bnc","mrj21","fc","lc","lc-apc","lsh","lsh-apc","mpo","mtrj","sc","sc-apc","st"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -160,11 +213,23 @@ const (
 	// WritableFrontPortTemplateTypeNr8p8c captures enum value "8p8c"
 	WritableFrontPortTemplateTypeNr8p8c string = "8p8c"
 
+	// WritableFrontPortTemplateTypeNr8p6c captures enum value "8p6c"
+	WritableFrontPortTemplateTypeNr8p6c string = "8p6c"
+
+	// WritableFrontPortTemplateTypeNr8p4c captures enum value "8p4c"
+	WritableFrontPortTemplateTypeNr8p4c string = "8p4c"
+
+	// WritableFrontPortTemplateTypeNr8p2c captures enum value "8p2c"
+	WritableFrontPortTemplateTypeNr8p2c string = "8p2c"
+
 	// WritableFrontPortTemplateTypeNr110Punch captures enum value "110-punch"
 	WritableFrontPortTemplateTypeNr110Punch string = "110-punch"
 
 	// WritableFrontPortTemplateTypeBnc captures enum value "bnc"
 	WritableFrontPortTemplateTypeBnc string = "bnc"
+
+	// WritableFrontPortTemplateTypeMrj21 captures enum value "mrj21"
+	WritableFrontPortTemplateTypeMrj21 string = "mrj21"
 
 	// WritableFrontPortTemplateTypeFc captures enum value "fc"
 	WritableFrontPortTemplateTypeFc string = "fc"
@@ -213,6 +278,19 @@ func (m *WritableFrontPortTemplate) validateType(formats strfmt.Registry) error 
 
 	// value enum
 	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableFrontPortTemplate) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
 		return err
 	}
 

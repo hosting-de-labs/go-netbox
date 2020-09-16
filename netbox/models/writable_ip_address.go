@@ -39,6 +39,18 @@ type WritableIPAddress struct {
 	// Required: true
 	Address *string `json:"address"`
 
+	// Assigned object
+	// Read Only: true
+	AssignedObject map[string]string `json:"assigned_object,omitempty"`
+
+	// Assigned object id
+	// Maximum: 2.147483647e+09
+	// Minimum: 0
+	AssignedObjectID *int64 `json:"assigned_object_id,omitempty"`
+
+	// Assigned object type
+	AssignedObjectType string `json:"assigned_object_type,omitempty"`
+
 	// Created
 	// Read Only: true
 	// Format: date
@@ -48,7 +60,7 @@ type WritableIPAddress struct {
 	CustomFields interface{} `json:"custom_fields,omitempty"`
 
 	// Description
-	// Max Length: 100
+	// Max Length: 200
 	Description string `json:"description,omitempty"`
 
 	// DNS Name
@@ -60,14 +72,11 @@ type WritableIPAddress struct {
 
 	// Family
 	// Read Only: true
-	Family int64 `json:"family,omitempty"`
+	Family string `json:"family,omitempty"`
 
 	// ID
 	// Read Only: true
 	ID int64 `json:"id,omitempty"`
-
-	// Interface
-	Interface *int64 `json:"interface,omitempty"`
 
 	// Last updated
 	// Read Only: true
@@ -92,14 +101,19 @@ type WritableIPAddress struct {
 	// Status
 	//
 	// The operational status of this IP
-	// Enum: [active reserved deprecated dhcp]
+	// Enum: [active reserved deprecated dhcp slaac]
 	Status string `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags,omitempty"`
 
 	// Tenant
 	Tenant *int64 `json:"tenant,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 
 	// VRF
 	Vrf *int64 `json:"vrf,omitempty"`
@@ -110,6 +124,10 @@ func (m *WritableIPAddress) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAddress(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAssignedObjectID(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -145,6 +163,10 @@ func (m *WritableIPAddress) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateURL(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -154,6 +176,23 @@ func (m *WritableIPAddress) Validate(formats strfmt.Registry) error {
 func (m *WritableIPAddress) validateAddress(formats strfmt.Registry) error {
 
 	if err := validate.Required("address", "body", m.Address); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *WritableIPAddress) validateAssignedObjectID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AssignedObjectID) { // not required
+		return nil
+	}
+
+	if err := validate.MinimumInt("assigned_object_id", "body", int64(*m.AssignedObjectID), 0, false); err != nil {
+		return err
+	}
+
+	if err := validate.MaximumInt("assigned_object_id", "body", int64(*m.AssignedObjectID), 2.147483647e+09, false); err != nil {
 		return err
 	}
 
@@ -179,7 +218,7 @@ func (m *WritableIPAddress) validateDescription(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if err := validate.MaxLength("description", "body", string(m.Description), 100); err != nil {
+	if err := validate.MaxLength("description", "body", string(m.Description), 200); err != nil {
 		return err
 	}
 
@@ -290,7 +329,7 @@ var writableIpAddressTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["active","reserved","deprecated","dhcp"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["active","reserved","deprecated","dhcp","slaac"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -311,6 +350,9 @@ const (
 
 	// WritableIPAddressStatusDhcp captures enum value "dhcp"
 	WritableIPAddressStatusDhcp string = "dhcp"
+
+	// WritableIPAddressStatusSlaac captures enum value "slaac"
+	WritableIPAddressStatusSlaac string = "slaac"
 )
 
 // prop value enum
@@ -342,11 +384,32 @@ func (m *WritableIPAddress) validateTags(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
-
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
 		}
 
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (m *WritableIPAddress) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
 	}
 
 	return nil

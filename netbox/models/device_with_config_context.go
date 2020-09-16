@@ -20,6 +20,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -124,10 +125,15 @@ type DeviceWithConfigContext struct {
 	Status *DeviceWithConfigContextStatus `json:"status,omitempty"`
 
 	// tags
-	Tags []string `json:"tags"`
+	Tags []*NestedTag `json:"tags,omitempty"`
 
 	// tenant
 	Tenant *NestedTenant `json:"tenant,omitempty"`
+
+	// Url
+	// Read Only: true
+	// Format: uri
+	URL strfmt.URI `json:"url,omitempty"`
 
 	// Vc position
 	// Maximum: 255
@@ -224,6 +230,10 @@ func (m *DeviceWithConfigContext) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateTenant(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateURL(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -550,9 +560,17 @@ func (m *DeviceWithConfigContext) validateTags(formats strfmt.Registry) error {
 	}
 
 	for i := 0; i < len(m.Tags); i++ {
+		if swag.IsZero(m.Tags[i]) { // not required
+			continue
+		}
 
-		if err := validate.MinLength("tags"+"."+strconv.Itoa(i), "body", string(m.Tags[i]), 1); err != nil {
-			return err
+		if m.Tags[i] != nil {
+			if err := m.Tags[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("tags" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
 		}
 
 	}
@@ -573,6 +591,19 @@ func (m *DeviceWithConfigContext) validateTenant(formats strfmt.Registry) error 
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *DeviceWithConfigContext) validateURL(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.URL) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("url", "body", "uri", m.URL.String(), formats); err != nil {
+		return err
 	}
 
 	return nil
@@ -654,10 +685,12 @@ type DeviceWithConfigContextFace struct {
 
 	// label
 	// Required: true
+	// Enum: [Front Rear]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [front rear]
 	Value *string `json:"value"`
 }
 
@@ -679,18 +712,86 @@ func (m *DeviceWithConfigContextFace) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+var deviceWithConfigContextFaceTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Front","Rear"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		deviceWithConfigContextFaceTypeLabelPropEnum = append(deviceWithConfigContextFaceTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// DeviceWithConfigContextFaceLabelFront captures enum value "Front"
+	DeviceWithConfigContextFaceLabelFront string = "Front"
+
+	// DeviceWithConfigContextFaceLabelRear captures enum value "Rear"
+	DeviceWithConfigContextFaceLabelRear string = "Rear"
+)
+
+// prop value enum
+func (m *DeviceWithConfigContextFace) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, deviceWithConfigContextFaceTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *DeviceWithConfigContextFace) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("face"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("face"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var deviceWithConfigContextFaceTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["front","rear"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		deviceWithConfigContextFaceTypeValuePropEnum = append(deviceWithConfigContextFaceTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// DeviceWithConfigContextFaceValueFront captures enum value "front"
+	DeviceWithConfigContextFaceValueFront string = "front"
+
+	// DeviceWithConfigContextFaceValueRear captures enum value "rear"
+	DeviceWithConfigContextFaceValueRear string = "rear"
+)
+
+// prop value enum
+func (m *DeviceWithConfigContextFace) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, deviceWithConfigContextFaceTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *DeviceWithConfigContextFace) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("face"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("face"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 
@@ -721,10 +822,12 @@ type DeviceWithConfigContextStatus struct {
 
 	// label
 	// Required: true
+	// Enum: [Offline Active Planned Staged Failed Inventory Decommissioning]
 	Label *string `json:"label"`
 
 	// value
 	// Required: true
+	// Enum: [offline active planned staged failed inventory decommissioning]
 	Value *string `json:"value"`
 }
 
@@ -746,18 +849,116 @@ func (m *DeviceWithConfigContextStatus) Validate(formats strfmt.Registry) error 
 	return nil
 }
 
+var deviceWithConfigContextStatusTypeLabelPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["Offline","Active","Planned","Staged","Failed","Inventory","Decommissioning"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		deviceWithConfigContextStatusTypeLabelPropEnum = append(deviceWithConfigContextStatusTypeLabelPropEnum, v)
+	}
+}
+
+const (
+
+	// DeviceWithConfigContextStatusLabelOffline captures enum value "Offline"
+	DeviceWithConfigContextStatusLabelOffline string = "Offline"
+
+	// DeviceWithConfigContextStatusLabelActive captures enum value "Active"
+	DeviceWithConfigContextStatusLabelActive string = "Active"
+
+	// DeviceWithConfigContextStatusLabelPlanned captures enum value "Planned"
+	DeviceWithConfigContextStatusLabelPlanned string = "Planned"
+
+	// DeviceWithConfigContextStatusLabelStaged captures enum value "Staged"
+	DeviceWithConfigContextStatusLabelStaged string = "Staged"
+
+	// DeviceWithConfigContextStatusLabelFailed captures enum value "Failed"
+	DeviceWithConfigContextStatusLabelFailed string = "Failed"
+
+	// DeviceWithConfigContextStatusLabelInventory captures enum value "Inventory"
+	DeviceWithConfigContextStatusLabelInventory string = "Inventory"
+
+	// DeviceWithConfigContextStatusLabelDecommissioning captures enum value "Decommissioning"
+	DeviceWithConfigContextStatusLabelDecommissioning string = "Decommissioning"
+)
+
+// prop value enum
+func (m *DeviceWithConfigContextStatus) validateLabelEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, deviceWithConfigContextStatusTypeLabelPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *DeviceWithConfigContextStatus) validateLabel(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"label", "body", m.Label); err != nil {
 		return err
 	}
 
+	// value enum
+	if err := m.validateLabelEnum("status"+"."+"label", "body", *m.Label); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var deviceWithConfigContextStatusTypeValuePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["offline","active","planned","staged","failed","inventory","decommissioning"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		deviceWithConfigContextStatusTypeValuePropEnum = append(deviceWithConfigContextStatusTypeValuePropEnum, v)
+	}
+}
+
+const (
+
+	// DeviceWithConfigContextStatusValueOffline captures enum value "offline"
+	DeviceWithConfigContextStatusValueOffline string = "offline"
+
+	// DeviceWithConfigContextStatusValueActive captures enum value "active"
+	DeviceWithConfigContextStatusValueActive string = "active"
+
+	// DeviceWithConfigContextStatusValuePlanned captures enum value "planned"
+	DeviceWithConfigContextStatusValuePlanned string = "planned"
+
+	// DeviceWithConfigContextStatusValueStaged captures enum value "staged"
+	DeviceWithConfigContextStatusValueStaged string = "staged"
+
+	// DeviceWithConfigContextStatusValueFailed captures enum value "failed"
+	DeviceWithConfigContextStatusValueFailed string = "failed"
+
+	// DeviceWithConfigContextStatusValueInventory captures enum value "inventory"
+	DeviceWithConfigContextStatusValueInventory string = "inventory"
+
+	// DeviceWithConfigContextStatusValueDecommissioning captures enum value "decommissioning"
+	DeviceWithConfigContextStatusValueDecommissioning string = "decommissioning"
+)
+
+// prop value enum
+func (m *DeviceWithConfigContextStatus) validateValueEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, deviceWithConfigContextStatusTypeValuePropEnum); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (m *DeviceWithConfigContextStatus) validateValue(formats strfmt.Registry) error {
 
 	if err := validate.Required("status"+"."+"value", "body", m.Value); err != nil {
+		return err
+	}
+
+	// value enum
+	if err := m.validateValueEnum("status"+"."+"value", "body", *m.Value); err != nil {
 		return err
 	}
 

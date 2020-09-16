@@ -27,7 +27,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
-	"github.com/go-openapi/swag"
 
 	strfmt "github.com/go-openapi/strfmt"
 )
@@ -77,7 +76,7 @@ for the extras reports run operation typically these are written to a http.Reque
 type ExtrasReportsRunParams struct {
 
 	/*ID*/
-	ID int64
+	ID string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -118,13 +117,13 @@ func (o *ExtrasReportsRunParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithID adds the id to the extras reports run params
-func (o *ExtrasReportsRunParams) WithID(id int64) *ExtrasReportsRunParams {
+func (o *ExtrasReportsRunParams) WithID(id string) *ExtrasReportsRunParams {
 	o.SetID(id)
 	return o
 }
 
 // SetID adds the id to the extras reports run params
-func (o *ExtrasReportsRunParams) SetID(id int64) {
+func (o *ExtrasReportsRunParams) SetID(id string) {
 	o.ID = id
 }
 
@@ -137,7 +136,7 @@ func (o *ExtrasReportsRunParams) WriteToRequest(r runtime.ClientRequest, reg str
 	var res []error
 
 	// path param id
-	if err := r.SetPathParam("id", swag.FormatInt64(o.ID)); err != nil {
+	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
 
