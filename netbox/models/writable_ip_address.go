@@ -39,9 +39,8 @@ type WritableIPAddress struct {
 	// Required: true
 	Address *string `json:"address"`
 
-	// Assigned object
-	// Read Only: true
-	AssignedObject map[string]string `json:"assigned_object,omitempty"`
+	// assigned object
+	AssignedObject *IPAddressAssignedObject `json:"assigned_object,omitempty"`
 
 	// Assigned object id
 	// Maximum: 2.147483647e+09
@@ -127,6 +126,10 @@ func (m *WritableIPAddress) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateAssignedObject(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateAssignedObjectID(formats); err != nil {
 		res = append(res, err)
 	}
@@ -177,6 +180,24 @@ func (m *WritableIPAddress) validateAddress(formats strfmt.Registry) error {
 
 	if err := validate.Required("address", "body", m.Address); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *WritableIPAddress) validateAssignedObject(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AssignedObject) { // not required
+		return nil
+	}
+
+	if m.AssignedObject != nil {
+		if err := m.AssignedObject.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("assigned_object")
+			}
+			return err
+		}
 	}
 
 	return nil
