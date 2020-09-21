@@ -41877,12 +41877,8 @@
           "x-nullable": true
         },
         "assigned_object": {
-          "title": "Assigned object",
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "readOnly": true
+          "$ref": "#/definitions/IPAddressAssignedObject",
+          "x-nullable": true
         },
         "nat_inside": {
           "$ref": "#/definitions/NestedIPAddress"
@@ -42004,12 +42000,8 @@
           "x-nullable": true
         },
         "assigned_object": {
-          "title": "Assigned object",
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "readOnly": true
+          "$ref": "#/definitions/IPAddressAssignedObject",
+          "x-nullable": true
         },
         "nat_inside": {
           "title": "NAT (Inside)",
@@ -42054,6 +42046,115 @@
           "title": "Last updated",
           "type": "string",
           "format": "date-time",
+          "readOnly": true
+        }
+      }
+    },
+    "IPAddressAssignedObject": {
+      "title": "AssignedObject",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "url": {
+          "title": "Url",
+          "type": "string",
+          "format": "uri",
+          "readOnly": true
+        },
+        "device": {
+          "title": "Device",
+          "type": "object",
+          "x-nullable": true,
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "integer",
+              "readOnly": true
+            },
+            "url": {
+              "title": "Url",
+              "type": "string",
+              "format": "uri",
+              "readOnly": true
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "maxLength": 50,
+              "minLength": 1
+            }
+          }
+        },
+        "virtual_machine": {
+          "title": "Virtual machine",
+          "type": "object",
+          "x-nullable": true,
+          "properties": {
+            "id": {
+              "title": "ID",
+              "type": "integer",
+              "readOnly": true
+            },
+            "url": {
+              "title": "Url",
+              "type": "string",
+              "format": "uri",
+              "readOnly": true
+            },
+            "name": {
+              "title": "Name",
+              "type": "string",
+              "maxLength": 50,
+              "minLength": 1
+            },
+            "display_name": {
+              "title": "Display name",
+              "type": "string",
+              "maxLength": 50,
+              "minLength": 1
+            }
+          }
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1
+        },
+        "cable": {
+          "title": "Cable",
+          "type": "integer",
+          "x-nullable": true
+        },
+        "connection_status": {
+          "title": "Connection status",
+          "required": [
+            "label",
+            "value"
+          ],
+          "type": "object",
+          "x-nullable": true,
+          "properties": {
+            "label": {
+              "type": "string",
+              "enum": [
+                "Not Connected",
+                "Connected"
+              ]
+            },
+            "value": {
+              "type": "boolean",
+              "enum": [
+                false,
+                true
+              ],
+              "x-nullable": true
+            }
+          },
           "readOnly": true
         }
       }
