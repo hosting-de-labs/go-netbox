@@ -21,12 +21,13 @@ package models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // NestedCircuitType Type
+//
 // swagger:model NestedCircuitType
 type NestedCircuitType struct {
 

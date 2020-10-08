@@ -21,12 +21,13 @@ package models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableVLANGroup writable v l a n group
+//
 // swagger:model WritableVLANGroup
 type WritableVLANGroup struct {
 

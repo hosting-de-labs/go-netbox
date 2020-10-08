@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // InterfaceTemplate interface template
+//
 // swagger:model InterfaceTemplate
 type InterfaceTemplate struct {
 
@@ -214,6 +215,7 @@ func (m *InterfaceTemplate) UnmarshalBinary(b []byte) error {
 }
 
 // InterfaceTemplateType Type
+//
 // swagger:model InterfaceTemplateType
 type InterfaceTemplateType struct {
 
@@ -479,7 +481,7 @@ const (
 
 // prop value enum
 func (m *InterfaceTemplateType) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, interfaceTemplateTypeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceTemplateTypeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -732,7 +734,7 @@ const (
 
 // prop value enum
 func (m *InterfaceTemplateType) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, interfaceTemplateTypeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceTemplateTypeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

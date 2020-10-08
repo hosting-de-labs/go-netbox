@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // CircuitTermination circuit termination
+//
 // swagger:model CircuitTermination
 type CircuitTermination struct {
 
@@ -290,7 +291,7 @@ const (
 
 // prop value enum
 func (m *CircuitTermination) validateTermSideEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, circuitTerminationTypeTermSidePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, circuitTerminationTypeTermSidePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -372,6 +373,7 @@ func (m *CircuitTermination) UnmarshalBinary(b []byte) error {
 }
 
 // CircuitTerminationConnectionStatus Connection status
+//
 // swagger:model CircuitTerminationConnectionStatus
 type CircuitTerminationConnectionStatus struct {
 
@@ -427,7 +429,7 @@ const (
 
 // prop value enum
 func (m *CircuitTerminationConnectionStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, circuitTerminationConnectionStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, circuitTerminationConnectionStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -461,7 +463,7 @@ func init() {
 
 // prop value enum
 func (m *CircuitTerminationConnectionStatus) validateValueEnum(path, location string, value bool) error {
-	if err := validate.Enum(path, location, value, circuitTerminationConnectionStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, circuitTerminationConnectionStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

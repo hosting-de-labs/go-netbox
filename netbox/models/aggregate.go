@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Aggregate aggregate
+//
 // swagger:model Aggregate
 type Aggregate struct {
 
@@ -278,6 +279,7 @@ func (m *Aggregate) UnmarshalBinary(b []byte) error {
 }
 
 // AggregateFamily Family
+//
 // swagger:model AggregateFamily
 type AggregateFamily struct {
 
@@ -333,7 +335,7 @@ const (
 
 // prop value enum
 func (m *AggregateFamily) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, aggregateFamilyTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, aggregateFamilyTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -367,7 +369,7 @@ func init() {
 
 // prop value enum
 func (m *AggregateFamily) validateValueEnum(path, location string, value int64) error {
-	if err := validate.Enum(path, location, value, aggregateFamilyTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, aggregateFamilyTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

@@ -21,12 +21,13 @@ package models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // NestedPlatform Platform
+//
 // swagger:model NestedPlatform
 type NestedPlatform struct {
 

@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableRack writable rack
+//
 // swagger:model WritableRack
 type WritableRack struct {
 
@@ -340,7 +341,7 @@ const (
 
 // prop value enum
 func (m *WritableRack) validateOuterUnitEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableRackTypeOuterUnitPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableRackTypeOuterUnitPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -431,7 +432,7 @@ const (
 
 // prop value enum
 func (m *WritableRack) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableRackTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableRackTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -508,7 +509,7 @@ const (
 
 // prop value enum
 func (m *WritableRack) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableRackTypeTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableRackTypeTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -572,7 +573,7 @@ func init() {
 
 // prop value enum
 func (m *WritableRack) validateWidthEnum(path, location string, value int64) error {
-	if err := validate.Enum(path, location, value, writableRackTypeWidthPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableRackTypeWidthPropEnum, true); err != nil {
 		return err
 	}
 	return nil

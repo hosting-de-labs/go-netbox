@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // PowerPortTemplate power port template
+//
 // swagger:model PowerPortTemplate
 type PowerPortTemplate struct {
 
@@ -266,6 +267,7 @@ func (m *PowerPortTemplate) UnmarshalBinary(b []byte) error {
 }
 
 // PowerPortTemplateType Type
+//
 // swagger:model PowerPortTemplateType
 type PowerPortTemplateType struct {
 
@@ -540,7 +542,7 @@ const (
 
 // prop value enum
 func (m *PowerPortTemplateType) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerPortTemplateTypeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerPortTemplateTypeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -802,7 +804,7 @@ const (
 
 // prop value enum
 func (m *PowerPortTemplateType) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerPortTemplateTypeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerPortTemplateTypeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

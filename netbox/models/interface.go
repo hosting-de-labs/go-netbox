@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Interface interface
+//
 // swagger:model Interface
 type Interface struct {
 
@@ -459,6 +460,7 @@ func (m *Interface) UnmarshalBinary(b []byte) error {
 }
 
 // InterfaceConnectionStatus Connection status
+//
 // swagger:model InterfaceConnectionStatus
 type InterfaceConnectionStatus struct {
 
@@ -514,7 +516,7 @@ const (
 
 // prop value enum
 func (m *InterfaceConnectionStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, interfaceConnectionStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceConnectionStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -548,7 +550,7 @@ func init() {
 
 // prop value enum
 func (m *InterfaceConnectionStatus) validateValueEnum(path, location string, value bool) error {
-	if err := validate.Enum(path, location, value, interfaceConnectionStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceConnectionStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -587,6 +589,7 @@ func (m *InterfaceConnectionStatus) UnmarshalBinary(b []byte) error {
 }
 
 // InterfaceMode Mode
+//
 // swagger:model InterfaceMode
 type InterfaceMode struct {
 
@@ -645,7 +648,7 @@ const (
 
 // prop value enum
 func (m *InterfaceMode) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, interfaceModeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceModeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -691,7 +694,7 @@ const (
 
 // prop value enum
 func (m *InterfaceMode) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, interfaceModeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceModeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -730,6 +733,7 @@ func (m *InterfaceMode) UnmarshalBinary(b []byte) error {
 }
 
 // InterfaceType Type
+//
 // swagger:model InterfaceType
 type InterfaceType struct {
 
@@ -995,7 +999,7 @@ const (
 
 // prop value enum
 func (m *InterfaceType) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, interfaceTypeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceTypeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -1248,7 +1252,7 @@ const (
 
 // prop value enum
 func (m *InterfaceType) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, interfaceTypeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, interfaceTypeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

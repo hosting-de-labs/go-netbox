@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Cable cable
+//
 // swagger:model Cable
 type Cable struct {
 
@@ -393,7 +394,7 @@ const (
 
 // prop value enum
 func (m *Cable) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, cableTypeTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, cableTypeTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -445,6 +446,7 @@ func (m *Cable) UnmarshalBinary(b []byte) error {
 }
 
 // CableLengthUnit Length unit
+//
 // swagger:model CableLengthUnit
 type CableLengthUnit struct {
 
@@ -506,7 +508,7 @@ const (
 
 // prop value enum
 func (m *CableLengthUnit) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, cableLengthUnitTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, cableLengthUnitTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -555,7 +557,7 @@ const (
 
 // prop value enum
 func (m *CableLengthUnit) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, cableLengthUnitTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, cableLengthUnitTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -594,6 +596,7 @@ func (m *CableLengthUnit) UnmarshalBinary(b []byte) error {
 }
 
 // CableStatus Status
+//
 // swagger:model CableStatus
 type CableStatus struct {
 
@@ -652,7 +655,7 @@ const (
 
 // prop value enum
 func (m *CableStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, cableStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, cableStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -698,7 +701,7 @@ const (
 
 // prop value enum
 func (m *CableStatus) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, cableStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, cableStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableRearPortTemplate writable rear port template
+//
 // swagger:model WritableRearPortTemplate
 type WritableRearPortTemplate struct {
 
@@ -247,7 +248,7 @@ const (
 
 // prop value enum
 func (m *WritableRearPortTemplate) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableRearPortTemplateTypeTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableRearPortTemplateTypeTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil

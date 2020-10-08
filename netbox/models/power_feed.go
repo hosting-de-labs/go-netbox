@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // PowerFeed power feed
+//
 // swagger:model PowerFeed
 type PowerFeed struct {
 
@@ -454,6 +455,7 @@ func (m *PowerFeed) UnmarshalBinary(b []byte) error {
 }
 
 // PowerFeedPhase Phase
+//
 // swagger:model PowerFeedPhase
 type PowerFeedPhase struct {
 
@@ -522,7 +524,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedPhase) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedPhaseTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedPhaseTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -565,7 +567,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedPhase) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedPhaseTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedPhaseTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -604,6 +606,7 @@ func (m *PowerFeedPhase) UnmarshalBinary(b []byte) error {
 }
 
 // PowerFeedStatus Status
+//
 // swagger:model PowerFeedStatus
 type PowerFeedStatus struct {
 
@@ -678,7 +681,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -727,7 +730,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedStatus) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -766,6 +769,7 @@ func (m *PowerFeedStatus) UnmarshalBinary(b []byte) error {
 }
 
 // PowerFeedSupply Supply
+//
 // swagger:model PowerFeedSupply
 type PowerFeedSupply struct {
 
@@ -834,7 +838,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedSupply) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedSupplyTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedSupplyTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -877,7 +881,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedSupply) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedSupplyTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedSupplyTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -916,6 +920,7 @@ func (m *PowerFeedSupply) UnmarshalBinary(b []byte) error {
 }
 
 // PowerFeedType Type
+//
 // swagger:model PowerFeedType
 type PowerFeedType struct {
 
@@ -984,7 +989,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedType) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedTypeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedTypeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -1027,7 +1032,7 @@ const (
 
 // prop value enum
 func (m *PowerFeedType) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, powerFeedTypeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, powerFeedTypeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

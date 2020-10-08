@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableVMInterface writable VM interface
+//
 // swagger:model WritableVMInterface
 type WritableVMInterface struct {
 
@@ -163,7 +164,7 @@ const (
 
 // prop value enum
 func (m *WritableVMInterface) validateModeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableVmInterfaceTypeModePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableVmInterfaceTypeModePropEnum, true); err != nil {
 		return err
 	}
 	return nil

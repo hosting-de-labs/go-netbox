@@ -23,12 +23,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // InventoryItem inventory item
+//
 // swagger:model InventoryItem
 type InventoryItem struct {
 

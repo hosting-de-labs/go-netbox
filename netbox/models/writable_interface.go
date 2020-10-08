@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableInterface writable interface
+//
 // swagger:model WritableInterface
 type WritableInterface struct {
 
@@ -214,7 +215,7 @@ func init() {
 
 // prop value enum
 func (m *WritableInterface) validateConnectionStatusEnum(path, location string, value bool) error {
-	if err := validate.Enum(path, location, value, writableInterfaceTypeConnectionStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableInterfaceTypeConnectionStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -295,7 +296,7 @@ const (
 
 // prop value enum
 func (m *WritableInterface) validateModeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableInterfaceTypeModePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableInterfaceTypeModePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -620,7 +621,7 @@ const (
 
 // prop value enum
 func (m *WritableInterface) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableInterfaceTypeTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableInterfaceTypeTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil

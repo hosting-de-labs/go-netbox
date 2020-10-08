@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // JobResult job result
+//
 // swagger:model JobResult
 type JobResult struct {
 
@@ -237,6 +238,7 @@ func (m *JobResult) UnmarshalBinary(b []byte) error {
 }
 
 // JobResultStatus Status
+//
 // swagger:model JobResultStatus
 type JobResultStatus struct {
 
@@ -301,7 +303,7 @@ const (
 
 // prop value enum
 func (m *JobResultStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, jobResultStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, jobResultStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -353,7 +355,7 @@ const (
 
 // prop value enum
 func (m *JobResultStatus) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, jobResultStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, jobResultStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

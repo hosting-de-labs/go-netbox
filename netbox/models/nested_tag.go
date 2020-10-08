@@ -21,12 +21,13 @@ package models
 
 import (
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // NestedTag nested tag
+//
 // swagger:model NestedTag
 type NestedTag struct {
 
@@ -47,11 +48,10 @@ type NestedTag struct {
 	Name *string `json:"name"`
 
 	// Slug
-	// Required: true
 	// Max Length: 100
 	// Min Length: 1
 	// Pattern: ^[-a-zA-Z0-9_]+$
-	Slug *string `json:"slug"`
+	Slug string `json:"slug,omitempty"`
 
 	// Url
 	// Read Only: true
@@ -125,19 +125,19 @@ func (m *NestedTag) validateName(formats strfmt.Registry) error {
 
 func (m *NestedTag) validateSlug(formats strfmt.Registry) error {
 
-	if err := validate.Required("slug", "body", m.Slug); err != nil {
+	if swag.IsZero(m.Slug) { // not required
+		return nil
+	}
+
+	if err := validate.MinLength("slug", "body", string(m.Slug), 1); err != nil {
 		return err
 	}
 
-	if err := validate.MinLength("slug", "body", string(*m.Slug), 1); err != nil {
+	if err := validate.MaxLength("slug", "body", string(m.Slug), 100); err != nil {
 		return err
 	}
 
-	if err := validate.MaxLength("slug", "body", string(*m.Slug), 100); err != nil {
-		return err
-	}
-
-	if err := validate.Pattern("slug", "body", string(*m.Slug), `^[-a-zA-Z0-9_]+$`); err != nil {
+	if err := validate.Pattern("slug", "body", string(m.Slug), `^[-a-zA-Z0-9_]+$`); err != nil {
 		return err
 	}
 

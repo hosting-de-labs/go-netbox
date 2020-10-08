@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // IPAddressAssignedObject AssignedObject
+//
 // swagger:model IPAddressAssignedObject
 type IPAddressAssignedObject struct {
 
@@ -192,6 +193,7 @@ func (m *IPAddressAssignedObject) UnmarshalBinary(b []byte) error {
 }
 
 // IPAddressAssignedObjectConnectionStatus Connection status
+//
 // swagger:model IPAddressAssignedObjectConnectionStatus
 type IPAddressAssignedObjectConnectionStatus struct {
 
@@ -247,7 +249,7 @@ const (
 
 // prop value enum
 func (m *IPAddressAssignedObjectConnectionStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, ipAddressAssignedObjectConnectionStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, ipAddressAssignedObjectConnectionStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -281,7 +283,7 @@ func init() {
 
 // prop value enum
 func (m *IPAddressAssignedObjectConnectionStatus) validateValueEnum(path, location string, value bool) error {
-	if err := validate.Enum(path, location, value, ipAddressAssignedObjectConnectionStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, ipAddressAssignedObjectConnectionStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -320,6 +322,7 @@ func (m *IPAddressAssignedObjectConnectionStatus) UnmarshalBinary(b []byte) erro
 }
 
 // IPAddressAssignedObjectDevice Device
+//
 // swagger:model IPAddressAssignedObjectDevice
 type IPAddressAssignedObjectDevice struct {
 
@@ -405,6 +408,7 @@ func (m *IPAddressAssignedObjectDevice) UnmarshalBinary(b []byte) error {
 }
 
 // IPAddressAssignedObjectVirtualMachine Virtual machine
+//
 // swagger:model IPAddressAssignedObjectVirtualMachine
 type IPAddressAssignedObjectVirtualMachine struct {
 

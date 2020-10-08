@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableConsolePort writable console port
+//
 // swagger:model WritableConsolePort
 type WritableConsolePort struct {
 
@@ -169,7 +170,7 @@ func init() {
 
 // prop value enum
 func (m *WritableConsolePort) validateConnectionStatusEnum(path, location string, value bool) error {
-	if err := validate.Enum(path, location, value, writableConsolePortTypeConnectionStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableConsolePortTypeConnectionStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -322,7 +323,7 @@ const (
 
 // prop value enum
 func (m *WritableConsolePort) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableConsolePortTypeTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableConsolePortTypeTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil

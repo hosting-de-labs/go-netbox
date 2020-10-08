@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // VMInterface VM interface
+//
 // swagger:model VMInterface
 type VMInterface struct {
 
@@ -314,6 +315,7 @@ func (m *VMInterface) UnmarshalBinary(b []byte) error {
 }
 
 // VMInterfaceMode Mode
+//
 // swagger:model VMInterfaceMode
 type VMInterfaceMode struct {
 
@@ -372,7 +374,7 @@ const (
 
 // prop value enum
 func (m *VMInterfaceMode) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, vmInterfaceModeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, vmInterfaceModeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -418,7 +420,7 @@ const (
 
 // prop value enum
 func (m *VMInterfaceMode) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, vmInterfaceModeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, vmInterfaceModeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

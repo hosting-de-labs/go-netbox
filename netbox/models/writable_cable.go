@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableCable writable cable
+//
 // swagger:model WritableCable
 type WritableCable struct {
 
@@ -234,7 +235,7 @@ const (
 
 // prop value enum
 func (m *WritableCable) validateLengthUnitEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableCableTypeLengthUnitPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableCableTypeLengthUnitPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -280,7 +281,7 @@ const (
 
 // prop value enum
 func (m *WritableCable) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableCableTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableCableTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -454,7 +455,7 @@ const (
 
 // prop value enum
 func (m *WritableCable) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableCableTypeTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableCableTypeTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil

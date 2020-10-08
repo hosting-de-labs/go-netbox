@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableDeviceWithConfigContext writable device with config context
+//
 // swagger:model WritableDeviceWithConfigContext
 type WritableDeviceWithConfigContext struct {
 
@@ -293,7 +294,7 @@ const (
 
 // prop value enum
 func (m *WritableDeviceWithConfigContext) validateFaceEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableDeviceWithConfigContextTypeFacePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableDeviceWithConfigContextTypeFacePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -434,7 +435,7 @@ const (
 
 // prop value enum
 func (m *WritableDeviceWithConfigContext) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableDeviceWithConfigContextTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableDeviceWithConfigContextTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil

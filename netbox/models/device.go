@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Device device
+//
 // swagger:model Device
 type Device struct {
 
@@ -676,6 +677,7 @@ func (m *Device) UnmarshalBinary(b []byte) error {
 }
 
 // DeviceFace Face
+//
 // swagger:model DeviceFace
 type DeviceFace struct {
 
@@ -731,7 +733,7 @@ const (
 
 // prop value enum
 func (m *DeviceFace) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, deviceFaceTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, deviceFaceTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -774,7 +776,7 @@ const (
 
 // prop value enum
 func (m *DeviceFace) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, deviceFaceTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, deviceFaceTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -813,6 +815,7 @@ func (m *DeviceFace) UnmarshalBinary(b []byte) error {
 }
 
 // DeviceStatus Status
+//
 // swagger:model DeviceStatus
 type DeviceStatus struct {
 
@@ -883,7 +886,7 @@ const (
 
 // prop value enum
 func (m *DeviceStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, deviceStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, deviceStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -941,7 +944,7 @@ const (
 
 // prop value enum
 func (m *DeviceStatus) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, deviceStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, deviceStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

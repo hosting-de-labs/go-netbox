@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ConsolePort console port
+//
 // swagger:model ConsolePort
 type ConsolePort struct {
 
@@ -305,6 +306,7 @@ func (m *ConsolePort) UnmarshalBinary(b []byte) error {
 }
 
 // ConsolePortConnectionStatus Connection status
+//
 // swagger:model ConsolePortConnectionStatus
 type ConsolePortConnectionStatus struct {
 
@@ -360,7 +362,7 @@ const (
 
 // prop value enum
 func (m *ConsolePortConnectionStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, consolePortConnectionStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, consolePortConnectionStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -394,7 +396,7 @@ func init() {
 
 // prop value enum
 func (m *ConsolePortConnectionStatus) validateValueEnum(path, location string, value bool) error {
-	if err := validate.Enum(path, location, value, consolePortConnectionStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, consolePortConnectionStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -433,6 +435,7 @@ func (m *ConsolePortConnectionStatus) UnmarshalBinary(b []byte) error {
 }
 
 // ConsolePortType Type
+//
 // swagger:model ConsolePortType
 type ConsolePortType struct {
 
@@ -521,7 +524,7 @@ const (
 
 // prop value enum
 func (m *ConsolePortType) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, consolePortTypeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, consolePortTypeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -597,7 +600,7 @@ const (
 
 // prop value enum
 func (m *ConsolePortType) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, consolePortTypeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, consolePortTypeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

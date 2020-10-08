@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ObjectChange object change
+//
 // swagger:model ObjectChange
 type ObjectChange struct {
 
@@ -247,6 +248,7 @@ func (m *ObjectChange) UnmarshalBinary(b []byte) error {
 }
 
 // ObjectChangeAction Action
+//
 // swagger:model ObjectChangeAction
 type ObjectChangeAction struct {
 
@@ -305,7 +307,7 @@ const (
 
 // prop value enum
 func (m *ObjectChangeAction) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, objectChangeActionTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, objectChangeActionTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -351,7 +353,7 @@ const (
 
 // prop value enum
 func (m *ObjectChangeAction) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, objectChangeActionTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, objectChangeActionTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // RackUnit rack unit
+//
 // swagger:model RackUnit
 type RackUnit struct {
 
@@ -142,6 +143,7 @@ func (m *RackUnit) UnmarshalBinary(b []byte) error {
 }
 
 // RackUnitFace Face
+//
 // swagger:model RackUnitFace
 type RackUnitFace struct {
 
@@ -197,7 +199,7 @@ const (
 
 // prop value enum
 func (m *RackUnitFace) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, rackUnitFaceTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, rackUnitFaceTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -240,7 +242,7 @@ const (
 
 // prop value enum
 func (m *RackUnitFace) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, rackUnitFaceTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, rackUnitFaceTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

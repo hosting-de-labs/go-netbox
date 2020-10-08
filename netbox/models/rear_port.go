@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // RearPort rear port
+//
 // swagger:model RearPort
 type RearPort struct {
 
@@ -295,6 +296,7 @@ func (m *RearPort) UnmarshalBinary(b []byte) error {
 }
 
 // RearPortType Type
+//
 // swagger:model RearPortType
 type RearPortType struct {
 
@@ -395,7 +397,7 @@ const (
 
 // prop value enum
 func (m *RearPortType) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, rearPortTypeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, rearPortTypeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -483,7 +485,7 @@ const (
 
 // prop value enum
 func (m *RearPortType) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, rearPortTypeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, rearPortTypeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

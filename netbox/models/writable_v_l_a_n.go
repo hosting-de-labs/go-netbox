@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableVLAN writable v l a n
+//
 // swagger:model WritableVLAN
 type WritableVLAN struct {
 
@@ -223,7 +224,7 @@ const (
 
 // prop value enum
 func (m *WritableVLAN) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableVLANTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableVLANTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil

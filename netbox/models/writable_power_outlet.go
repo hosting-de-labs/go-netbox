@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritablePowerOutlet writable power outlet
+//
 // swagger:model WritablePowerOutlet
 type WritablePowerOutlet struct {
 
@@ -182,7 +183,7 @@ func init() {
 
 // prop value enum
 func (m *WritablePowerOutlet) validateConnectionStatusEnum(path, location string, value bool) error {
-	if err := validate.Enum(path, location, value, writablePowerOutletTypeConnectionStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writablePowerOutletTypeConnectionStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -250,7 +251,7 @@ const (
 
 // prop value enum
 func (m *WritablePowerOutlet) validateFeedLegEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writablePowerOutletTypeFeedLegPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writablePowerOutletTypeFeedLegPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -567,7 +568,7 @@ const (
 
 // prop value enum
 func (m *WritablePowerOutlet) validateTypeEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writablePowerOutletTypeTypePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writablePowerOutletTypeTypePropEnum, true); err != nil {
 		return err
 	}
 	return nil

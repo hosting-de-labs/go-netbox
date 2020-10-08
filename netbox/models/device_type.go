@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // DeviceType device type
+//
 // swagger:model DeviceType
 type DeviceType struct {
 
@@ -387,6 +388,7 @@ func (m *DeviceType) UnmarshalBinary(b []byte) error {
 }
 
 // DeviceTypeSubdeviceRole Subdevice role
+//
 // swagger:model DeviceTypeSubdeviceRole
 type DeviceTypeSubdeviceRole struct {
 
@@ -442,7 +444,7 @@ const (
 
 // prop value enum
 func (m *DeviceTypeSubdeviceRole) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, deviceTypeSubdeviceRoleTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, deviceTypeSubdeviceRoleTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -485,7 +487,7 @@ const (
 
 // prop value enum
 func (m *DeviceTypeSubdeviceRole) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, deviceTypeSubdeviceRoleTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, deviceTypeSubdeviceRoleTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

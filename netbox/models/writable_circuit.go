@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritableCircuit writable circuit
+//
 // swagger:model WritableCircuit
 type WritableCircuit struct {
 
@@ -288,7 +289,7 @@ const (
 
 // prop value enum
 func (m *WritableCircuit) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writableCircuitTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writableCircuitTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil

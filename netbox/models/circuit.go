@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Circuit circuit
+//
 // swagger:model Circuit
 type Circuit struct {
 
@@ -418,6 +419,7 @@ func (m *Circuit) UnmarshalBinary(b []byte) error {
 }
 
 // CircuitStatus Status
+//
 // swagger:model CircuitStatus
 type CircuitStatus struct {
 
@@ -485,7 +487,7 @@ const (
 
 // prop value enum
 func (m *CircuitStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, circuitStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, circuitStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -540,7 +542,7 @@ const (
 
 // prop value enum
 func (m *CircuitStatus) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, circuitStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, circuitStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

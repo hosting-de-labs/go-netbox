@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ExportTemplate export template
+//
 // swagger:model ExportTemplate
 type ExportTemplate struct {
 
@@ -248,6 +249,7 @@ func (m *ExportTemplate) UnmarshalBinary(b []byte) error {
 }
 
 // ExportTemplateTemplateLanguage Template language
+//
 // swagger:model ExportTemplateTemplateLanguage
 type ExportTemplateTemplateLanguage struct {
 
@@ -316,7 +318,7 @@ const (
 
 // prop value enum
 func (m *ExportTemplateTemplateLanguage) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, exportTemplateTemplateLanguageTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, exportTemplateTemplateLanguageTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -359,7 +361,7 @@ const (
 
 // prop value enum
 func (m *ExportTemplateTemplateLanguage) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, exportTemplateTemplateLanguageTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, exportTemplateTemplateLanguageTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

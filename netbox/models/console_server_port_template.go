@@ -23,12 +23,13 @@ import (
 	"encoding/json"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // ConsoleServerPortTemplate console server port template
+//
 // swagger:model ConsoleServerPortTemplate
 type ConsoleServerPortTemplate struct {
 
@@ -210,6 +211,7 @@ func (m *ConsoleServerPortTemplate) UnmarshalBinary(b []byte) error {
 }
 
 // ConsoleServerPortTemplateType Type
+//
 // swagger:model ConsoleServerPortTemplateType
 type ConsoleServerPortTemplateType struct {
 
@@ -298,7 +300,7 @@ const (
 
 // prop value enum
 func (m *ConsoleServerPortTemplateType) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, consoleServerPortTemplateTypeTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, consoleServerPortTemplateTypeTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -374,7 +376,7 @@ const (
 
 // prop value enum
 func (m *ConsoleServerPortTemplateType) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, consoleServerPortTemplateTypeTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, consoleServerPortTemplateTypeTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

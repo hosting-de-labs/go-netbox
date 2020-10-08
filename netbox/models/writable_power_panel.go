@@ -23,12 +23,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritablePowerPanel writable power panel
+//
 // swagger:model WritablePowerPanel
 type WritablePowerPanel struct {
 

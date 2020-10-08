@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // WritablePrefix writable prefix
+//
 // swagger:model WritablePrefix
 type WritablePrefix struct {
 
@@ -216,7 +217,7 @@ const (
 
 // prop value enum
 func (m *WritablePrefix) validateStatusEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, writablePrefixTypeStatusPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, writablePrefixTypeStatusPropEnum, true); err != nil {
 		return err
 	}
 	return nil

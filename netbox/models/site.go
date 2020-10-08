@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Site site
+//
 // swagger:model Site
 type Site struct {
 
@@ -524,6 +525,7 @@ func (m *Site) UnmarshalBinary(b []byte) error {
 }
 
 // SiteStatus Status
+//
 // swagger:model SiteStatus
 type SiteStatus struct {
 
@@ -588,7 +590,7 @@ const (
 
 // prop value enum
 func (m *SiteStatus) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, siteStatusTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, siteStatusTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -640,7 +642,7 @@ const (
 
 // prop value enum
 func (m *SiteStatus) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, siteStatusTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, siteStatusTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil

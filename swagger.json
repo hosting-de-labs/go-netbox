@@ -32189,8 +32189,7 @@
     },
     "NestedTag": {
       "required": [
-        "name",
-        "slug"
+        "name"
       ],
       "type": "object",
       "properties": {

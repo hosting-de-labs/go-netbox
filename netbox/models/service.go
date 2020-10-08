@@ -24,12 +24,13 @@ import (
 	"strconv"
 
 	"github.com/go-openapi/errors"
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 )
 
 // Service service
+//
 // swagger:model Service
 type Service struct {
 
@@ -355,6 +356,7 @@ func (m *Service) UnmarshalBinary(b []byte) error {
 }
 
 // ServiceProtocol Protocol
+//
 // swagger:model ServiceProtocol
 type ServiceProtocol struct {
 
@@ -410,7 +412,7 @@ const (
 
 // prop value enum
 func (m *ServiceProtocol) validateLabelEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, serviceProtocolTypeLabelPropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, serviceProtocolTypeLabelPropEnum, true); err != nil {
 		return err
 	}
 	return nil
@@ -453,7 +455,7 @@ const (
 
 // prop value enum
 func (m *ServiceProtocol) validateValueEnum(path, location string, value string) error {
-	if err := validate.Enum(path, location, value, serviceProtocolTypeValuePropEnum); err != nil {
+	if err := validate.EnumCase(path, location, value, serviceProtocolTypeValuePropEnum, true); err != nil {
 		return err
 	}
 	return nil
